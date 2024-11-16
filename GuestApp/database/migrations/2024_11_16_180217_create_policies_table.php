@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('reviews', function (Blueprint $table) {
-            $table->uuid('reviewid')->primary();
-            $table->uuid('accomodationid');
-            $table->uuid('userid');
-            $table->double('rating')->nullable();
-            $table->text('review')->nullable();
+        Schema::create('policies', function (Blueprint $table) {
+            $table->uuid('policyid')->primary();
+            $table->string('policydesc');
+            $table->boolean('isactive')->default(true);
             $table->timestamp('created')->default(now());
             $table->timestamp('updated')->default(now());
         });
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('reviews');
+        Schema::dropIfExists('policies');
     }
 };
