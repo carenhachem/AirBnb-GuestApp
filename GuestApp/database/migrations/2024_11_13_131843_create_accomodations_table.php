@@ -15,10 +15,8 @@ return new class extends Migration
             $table->uuid('accomodationid')->primary();
             $table->string('description')->nullable();
             $table->double('pricepernight');
-            $table->int('typeid');
-            $table->json('amenityid');
+            $table->uuid('typeid');
             $table->int('guestcapacity');
-            $table->json('policyid');
             $table->double('rating')->nullable();
             $table->json('image')->nullable();
             $table->boolean('isactive')->default(true);

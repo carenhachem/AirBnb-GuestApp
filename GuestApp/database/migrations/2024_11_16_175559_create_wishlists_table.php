@@ -16,6 +16,7 @@ return new class extends Migration
             $table->uuid('userid');
             $table->uuid('accomodationid');
             $table->timestamp('created')->default(now());
+            $table->timestamp('updated')->default(now());
         });
     }
 

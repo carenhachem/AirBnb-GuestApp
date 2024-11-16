@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('reservations', function (Blueprint $table) {
             $table->uuid('reservationid')->primary();
             $table->uuid('userid');
-            $table->int('accomodationid');
+            $table->uuid('accomodationid');
             $table->date('checkin');
             $table->date('checkout');
             $table->double('totalprice');

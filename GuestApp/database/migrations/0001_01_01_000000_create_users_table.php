@@ -20,8 +20,8 @@ return new class extends Migration
             $table->string('password');
             $table->string('token');
             $table->string('refreshtoken');
-            $table->int('loginmethodid');
-            $table->int('paymentmethodid')->nullable();
+            $table->uuid('loginmethodid');
+            $table->uuid('paymentmethodid')->nullable();
             $table->timestamp('created')->default(now());
             $table->timestamp('updated')->default(now());
         });

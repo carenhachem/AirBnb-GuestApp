@@ -12,6 +12,29 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
+    function getLoginMethod(){
+        return $this->belongsTo(login::class,'loginmethodid','loginmethodid');
+    }
+
+    function getPaymentMethod(){
+        return $this->belongsTo(payment::class,'paymentmethodid','paymentid');
+    }
+
+    public function getWishlists()
+    {
+        return $this->hasMany(wishlist::class, 'userid', 'userid');
+    }
+
+    public function getReviews()
+    {
+        return $this->hasMany(review::class, 'userid', 'userid');
+    }
+
+    public function getReservations()
+    {
+        return $this->hasMany(reservation::class, 'userid', 'userid');
+    }
+
     /**
      * The attributes that are mass assignable.
      *
