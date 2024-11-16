@@ -14,12 +14,14 @@ return new class extends Migration
         Schema::create('accomodationpolicies', function (Blueprint $table) {
             $table->uuid('accomodationpolicyid');
 
-            $table->foreignId('accomodationid')
+            $table->uuid('accomodationid');
+            $table->foreign('accomodationid')
             ->references('accomodationid')
             ->on('accomodations')
             ->onDelete('cascade');
 
-            $table->foreignId('policyid')
+            $table->uuid('policyid');
+            $table->foreign('policyid')
             ->references('policyid')
             ->on('policies')
             ->onDelete('cascade');
