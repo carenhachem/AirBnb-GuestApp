@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->double('pricepernight');
             $table->uuid('typeid');
+            $table->uuid('locationid');
             $table->integer('guestcapacity');
             $table->double('rating')->nullable();
             $table->json('image')->nullable();

@@ -46,4 +46,9 @@ class accomodation extends Model
         return $this->hasMany(reservation::class, 'accomodationid', 'accomodationid');
     }
 
+    public function getLocation()
+    {
+        return $this->belongsTo(accomodationlocation::class, 'locationid', 'locationid');
+    }
+
 }
