@@ -73,6 +73,7 @@ form {
 
 .field input {
     outline: none;
+    font-size: 14px;
     padding: 0 15px;
     border: 1px solid#CACACA;
 }
@@ -110,7 +111,7 @@ form {
 
 .form-link span,
 .form-link a {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 400;
     color: #232836;
 }
@@ -166,8 +167,20 @@ a.facebook .facebook-icon {
     background-color: #fff;
 }
 
+a.google .google-icon {
+    height: 28px;
+    width: 28px;
+    color: #0171d3;
+    font-size: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+}
+
 .facebook-icon,
-img.google-img {
+.google-icon {
     position: absolute;
     top: 50%;
     left: 15px;

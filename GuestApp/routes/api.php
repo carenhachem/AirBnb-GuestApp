@@ -14,7 +14,8 @@ Route::get('/user', function (Request $request) {
 Route::get('signup', [AuthController::class, 'create'])->name('user.create');
 Route::post('signup', [AuthController::class, 'store'])->name('user.store');
 
-Route::get('login', [UserController::class, 'create'])->name('user.login');
+Route::get('login', [AuthController::class, 'createLogin'])->name('user.login');
+Route::post('login', [AuthController::class, 'login'])->name('login');
 
 
 // Route::get('login/google', [AuthController::class, 'redirectToGoogle'])->name('login.google');

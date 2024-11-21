@@ -24,6 +24,43 @@ class AuthController extends Controller
         return view('signup');
     }    
 
+    public function createLogin()
+    {
+        return view('login');
+    }    
+
+    // Login using email or username and password
+    public function login(Request $request)
+    {
+        // Validate the incoming request
+        $request->validate([
+            'email_or_username' => 'required|string', // email or username field
+            'password' => 'required|string',
+        ]);
+
+        // Attempt to login by email or username
+        $user = User::where('email', $request->email_or_username)
+            ->orWhere('username', $request->email_or_username)
+            ->first();
+
+        if ($user && \Illuminate\Support\Facades\Hash::check($request->password, $user->password)) {
+            // Authentication passed, create a token for the user
+            $token = $user->createToken('API Token')->plainTextToken;
+
+            // return response()->json([
+            //     'message' => 'Login successful!',
+            //     'token' => $token,
+            // ], 200);
+            return redirect()->intended('home');
+        }
+
+        // Authentication failed
+        return response()->json([
+            'message' => 'Invalid credentials',
+        ], 401);
+    }
+
+
     /**
      * Store a newly created resource in storage.
      */

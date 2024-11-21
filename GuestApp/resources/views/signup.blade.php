@@ -72,7 +72,7 @@
                 <button type="submit" class="submit-button">Sign up</button>
             </form>
             <p class="already-have-account">
-                Already have an account? <a href="#" class="link">Login here</a>
+                Already have an account? <a href="{{ route('login') }}" class="link">Login here</a>
             </p>
         </div>
     </div>
