@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -12,6 +13,9 @@ Route::get('/user', function (Request $request) {
 //Route::apiResource('user',AuthController::class);
 Route::get('signup', [AuthController::class, 'create'])->name('user.create');
 Route::post('signup', [AuthController::class, 'store'])->name('user.store');
+
+Route::get('login', [UserController::class, 'create'])->name('user.login');
+
 
 // Route::get('login/google', [AuthController::class, 'redirectToGoogle'])->name('login.google');
 // Route::get('login/google/callback', [AuthController::class, 'handleGoogleCallback']);
