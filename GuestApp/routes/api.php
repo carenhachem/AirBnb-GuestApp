@@ -9,9 +9,16 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-Route::apiResource('user',AuthController::class);
+//Route::apiResource('user',AuthController::class);
 Route::get('signup', [AuthController::class, 'create'])->name('user.create');
-Route::post('signup', [AuthController::class, 'store'])->name('user.store');   
+Route::post('signup', [AuthController::class, 'store'])->name('user.store');
+
+// Route::get('login/google', [AuthController::class, 'redirectToGoogle'])->name('login.google');
+// Route::get('login/google/callback', [AuthController::class, 'handleGoogleCallback']);
+
+// Route::get('login/facebook', [AuthController::class, 'redirectToFacebook'])->name('login.facebook');
+// Route::get('login/facebook/callback', [AuthController::class, 'handleFacebookCallback']);
+
 
 // Route::middleware('auth:sanctum')->group(function () {
 // Route::apiResource('user', AuthController::class);

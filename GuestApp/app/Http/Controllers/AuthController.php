@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\usertoken;
 use Illuminate\Support\Str; 
-
+use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -21,70 +22,120 @@ class AuthController extends Controller
     public function create()
     {
         return view('signup');
-    }
+    }    
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        try {
+        // Validate the incoming request
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'username' => 'required|string|max:255|unique:users,username',
+            'password' => 'required|string|min:4|confirmed'
+        ]);
 
-            // $validated = $request->validate([
-            //     'firstname' => 'required|string|max:255',
-            //     'lastname' => 'required|string|max:255',
-            //     'email' => 'required|email|unique:users,email',
-            //     'username' => 'required|string|max:255|unique:users,username',
-            //     'password' => 'required|string|min:8',
-            // ]);
-            
-            // Create a new user
-            $user = User::create([
-                'userid' => Str::uuid(),  // Manually set the UUID
-                'firstname' => $request['firstname'],
-                'lastname' => $request['lastname'],
-                'email' => $request['email'],
-                'username' => $request['username'],
-                'password' => bcrypt($request['password']),  // Encrypt password
-            ]);
-            //dd($user);  // Add this line to inspect the $user object
+        // Prepare the user data
+        $userData = $request->except('password_confirmation');
+        $userData['password'] = bcrypt($request->password);
 
-            // Explicitly retrieve the 'userid' after creating the user
-            //$user->refresh(); // Ensures that the 'userid' is populated if it was not auto-loaded
+        // Create the user
+        $user = User::create([
+            'userid' => Str::uuid(),
+            'first_name' => $request['first_name'],
+            'last_name' => $request['last_name'],
+            'email' => $request['email'],
+            'username' => $request['username'],
+            'password' => $userData['password'],
+        ]);
 
-            //dd($user);
+        // Generate API token
+        $token = $user->createToken('API Token')->plainTextToken;
 
-    
-            // Check if the 'userid' is set
-            // if (!$user->userid) {
-            //     throw new \Exception('User ID was not generated.');
-            // }
-    
-            // Generate API token for the user
-            $token = $user->createToken('API Token')->plainTextToken;
-    
-            // Create a usertoken record with the correct user ID
-            // usertoken::create([
-            //     'token' => $token,
-            //     'refreshtoken' => null,
-            //     'userid' => $user->userid, // Use the correct user ID
-            // ]);
-    
-            // Return a success response with the user data and token
-            return response()->json([
-                'message' => 'Registration successful!',
-                'token' => $token,
-            ], 201); // 201: Created status
-        } catch (\Exception $e) {
-            // Handle errors (if any)
-            return response()->json([
-                'error' => 'An error occurred while registering.',
-                'message' => $e->getMessage(),
-            ], 500);
-        }
+        // Return response with token
+        return response()->json([
+            'message' => 'Registration successful!',
+            'token' => $token,
+        ], 201);
     }
-    
 
+    // Redirect to Google
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    // Handle Google Callback
+    public function callbackGoogle()
+    {
+        try {
+            $googleUser = Socialite::driver('google')->user();
+
+            $user = User::where('google_id', $googleUser->getId())->first();
+
+            if (!$user) {
+                // If user does not exist, create new user
+                $new_user = User::create([
+                    'userid' => Str::uuid(),
+                    'first_name' => $googleUser->getName(),
+                    'email' => $googleUser->getEmail(),
+                    'google_id' => $googleUser->getId(),
+                ]);
+
+                Auth::login($new_user);
+
+                return redirect()->intended('home');
+            }
+            else{
+                Auth::login($user);
+                return redirect()->intended('home');
+            }
+
+        } catch (\Throwable $th) {
+            dd('something went wrong'.$th->getMessage());
+        }
+        
+       // $token = $user->createToken('API Token')->plainTextToken;
+    }
+
+    // Redirect to Facebook
+    public function redirectToFacebook()
+    {
+        return Socialite::driver('facebook')->redirect();
+    }
+
+    // Handle Facebook Callback
+    public function handleFacebookCallback()
+    {
+        $facebookUser = Socialite::driver('facebook')->user();
+
+        // Check if user exists
+        $user = User::where('email', $facebookUser->getEmail())->first();
+
+        if (!$user) {
+            // Register new user if not exists
+            $user = User::create([
+                'first_name' => $facebookUser->getName(),
+                'email' => $facebookUser->getEmail(),
+                'password' => bcrypt(Str::random(16)), // Random password
+            ]);
+        }
+
+        // Log the user in
+        Auth::login($user);
+
+        // Generate API token
+        $token = $user->createToken('API Token')->plainTextToken;
+
+        // Return response with token
+        return response()->json([
+            'message' => 'Logged in successfully',
+            'token' => $token,
+        ]);
+    }
 
     /**
      * Display the specified resource.

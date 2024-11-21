@@ -16,12 +16,12 @@ return new class extends Migration
 
         Schema::create('users', function (Blueprint $table) {
             $table->uuid('userid')->primary()->default(DB::raw('gen_random_uuid()'));;
-            $table->string('firstname');
-            $table->string('lastname');
+            $table->string('first_name')->nullable();
+            $table->string('last_name')->nullable();
             $table->string('email')->unique();
             $table->string('username')->unique();
             $table->string('password')->nullable(); 
-            $table->uuid('loginmethodid');
+            $table->uuid('loginmethodid')->nullable();
             $table->foreign('loginmethodid')
               ->references('loginmethodid')
               ->on('logins') 
@@ -31,8 +31,9 @@ return new class extends Migration
               ->references('paymentid')
               ->on('payments') 
               ->onDelete('set null'); 
-              $table->timestamp('created_at')->default(now());
+            $table->timestamp('created_at')->default(now());
             $table->timestamp('updated_at')->default(now());
+            $table->string('google_id')->nullable();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
