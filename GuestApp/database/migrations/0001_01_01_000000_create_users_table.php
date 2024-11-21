@@ -3,27 +3,36 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Run the migrations.      
      */
     public function up(): void
     {
+        DB::statement('CREATE EXTENSION IF NOT EXISTS pgcrypto;'); // Enable pgcrypto extension
+
         Schema::create('users', function (Blueprint $table) {
-            $table->uuid('userid')->primary();
+            $table->uuid('userid')->primary()->default(DB::raw('gen_random_uuid()'));;
             $table->string('firstname');
             $table->string('lastname');
             $table->string('email')->unique();
             $table->string('username')->unique();
-            $table->string('password');
-            $table->string('token');
-            $table->string('refreshtoken');
+            $table->string('password')->nullable(); 
             $table->uuid('loginmethodid');
-            $table->uuid('paymentmethodid')->nullable();
-            $table->timestamp('created')->default(now());
-            $table->timestamp('updated')->default(now());
+            $table->foreign('loginmethodid')
+              ->references('loginmethodid')
+              ->on('logins') 
+              ->onDelete('set null'); 
+              $table->uuid('paymentmethodid')->nullable();
+            $table->foreign('paymentmethodid')
+              ->references('paymentid')
+              ->on('payments') 
+              ->onDelete('set null'); 
+              $table->timestamp('created_at')->default(now());
+            $table->timestamp('updated_at')->default(now());
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
