@@ -35,6 +35,12 @@ class User extends Authenticatable
         return $this->hasMany(reservation::class, 'userid', 'userid');
     }
 
+    public function getTransactions()
+    {
+        return $this->hasMany(Transaction::class, 'userid', 'userid');
+    }
+
+
     /**
      * The attributes that are mass assignable.
      *
