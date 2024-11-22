@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,6 +23,17 @@ Route::post('signup', [AuthController::class, 'store'])->name('user.store');
 
 Route::get('login', [AuthController::class, 'createLogin'])->name('user.login');
 Route::post('login', [AuthController::class, 'login'])->name('login');
+
+Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
+// Route::middleware('auth:sanctum')->get('profile', [UserController::class, 'showProfile'])->name('profile');
+
+// Route::middleware('auth:sanctum')->get('/profile/{userId}', [User::class, 'show'])->name('profile');
+Route::middleware(['auth:sanctum', 'extractUserId'])->get('profile', [UserController::class, 'show'])->name('profile');
+
+
+Route::post('refresh-token', [AuthController::class, 'refresh']);
+
 
 // Route::middleware(['auth:sanctum', 'extractUserId'])->group(function () {
 //     Route::get('testUserid', [UserController::class, 'testUserid']);
