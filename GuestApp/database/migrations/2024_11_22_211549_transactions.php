@@ -12,15 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('transactions', function (Blueprint $table) {
-            $table->uuid('transactionid')->primary();
+            $table->uuid('transactionid')->primary()->default(DB::raw('uuid_generate_v4()'));
             $table->uuid('userid');
-            $table->uuid('paymentmethodid');
             $table->uuid('infoid');
             $table->decimal('amount', 10, 2); 
             $table->timestamp('paydate')->default(now());
+            $table->string('address');
+            $table->string('city');
+            $table->string('state');
+            $table->string('zipcode');
+            $table->timestamps(); 
 
             $table->foreign('userid')->references('userid')->on('users')->onDelete('cascade');
-            $table->foreign('paymentmethodid')->references('paymentid')->on('payments')->onDelete('cascade');
             $table->foreign('infoid')->references('cardinfoid')->on('cardinfos')->onDelete('cascade');
         });
     }
@@ -31,5 +34,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('transactions');
+        
     }
 };

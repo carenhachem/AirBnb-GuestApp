@@ -7,12 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Cardinfo extends Model
 {
     protected $primaryKey = 'cardinfoid';
-    protected $keyType = 'string';
+    protected $keyType = 'uuid';
     public $incrementing = false;
     
-    protected $fillable = [
-        'cardholdername', 'cardnumber', 'expirationdate', 'cvv', 'email'
-    ];
+    protected $fillable = ['cardinfoid', 'nameoncard', 'creditcardnumber', 'expmonth', 'expyear', 'cvv'];
+
 
     public function getTransactions()
     {

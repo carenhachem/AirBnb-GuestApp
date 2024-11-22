@@ -10,4 +10,4 @@ use App\Http\Controllers\PaymentGatewayController;
 // })->middleware('auth:sanctum');
 
 Route::get('/payment', [PaymentGatewayController::class, 'showPaymentPage'])->name('payment.show');
-Route::post('/payment/store',[PaymentGatewayController::class, 'store']);
+Route::post('/payment/store',[PaymentGatewayController::class, 'store'])->name('payment.store');

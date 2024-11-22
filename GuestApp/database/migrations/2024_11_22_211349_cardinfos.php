@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('cardinfos', function (Blueprint $table) {
-            $table->uuid('cardinfoid')->primary();
-            $table->string('cardholdername');
-            $table->string('cardnumber');
-            $table->date('expirationdate');
-            $table->string('cvv'); 
-            $table->string('email');
+            $table->uuid('cardinfoid')->primary()->default(DB::raw('uuid_generate_v4()'));
+            $table->string('nameoncard');
+            $table->string('creditcardnumber');
+            $table->string('expmonth');
+            $table->integer('expyear');
+            $table->string('cvv');
             $table->timestamps(); 
         });
     }

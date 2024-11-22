@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Payment;
 use App\Models\Transaction;
 use App\Models\Cardinfo;
+use Illuminate\Support\Str;
 
 
 
@@ -16,46 +16,57 @@ class PaymentGatewayController extends Controller
         return view('paymentForm'); 
     }
 
+    
     public function store(Request $request)
     {
-        $this->validate($request, [
-            //see how to take 'visa' or 'when the user clicks on add card'
-            'payment_method' => 'required|in:visa,paypal', 
-            'cardholdername' => 'required_if:payment_method,visa|string|max:255',
-            'cardnumber' => 'required_if:payment_method,visa|string|max:255',
-            'expirationdate' => 'required_if:payment_method,visa|date_format:Y-m-d',
-            'cvv' => 'required_if:payment_method,visa|string|max:4',
-            'email' => 'required_if:payment_method,paypal|email|max:255',
-            'amount' => 'required|numeric|min:0', 
-            //see how to take the amount from the step before entering card info
-        ]);
+        // $this->validate($request, [
+        //     'userid' => 'required|uuid|exists:users,userid',
+        //     'amount' => 'required|numeric|min:0',
+        //     'address' => 'required',
+        //     'city' => 'required',
+        //     'zipcode' => 'required',
+        //     'state' => 'required',
+        //     'nameoncard' => 'required|string|max:255',
+        //     'creditcardnumber' => 'required|string|max:255',
+        //     'expyear' => 'required|int',
+        //     'expmonth' => 'required|string',
+        //     'cvv' => 'required|string|max:4',
+        // ]);
 
+         // Get authenticated user from Auth if caren/joe implemented this way
+        //  $user = Auth::user();
 
-         // Get authenticated user 
-         $user = Auth::user();
-
-         $paymentMethod = Payment::where('paymentmethod', $request->payment_method)->first(); 
+        // if (!$user) {
+        //     return response()->json(['error' => 'User not authenticated.'], 401);
+        // }
 
          $cardInfo = null;
-        if ($request->payment_method == 'visa') {
-            $cardInfo = Cardinfo::create([
-                'cardholdername' => $request->cardholdername,
-                'cardnumber' => $request->cardnumber,
-                'expirationdate' => $request->expirationdate,
-                'cvv' => $request->cvv,
-            ]);
+
+        $cardInfo = Cardinfo::create([
+            'cardinfoid' => Str::uuid(),
+            'nameoncard' => $request->nameoncard,
+            'creditcardnumber' => $request->creditcardnumber,
+            'expyear' => $request->expyear,
+            'expmonth' => $request->expmonth,
+            'cvv' => $request->cvv,
+        ]);
+
+        if (!$cardInfo) {
+ 
+        return response()->json(['error' => 'Failed to save card information.'], 500);
         }
 
-        elseif($request->payment_method == 'paypal'){
-            $cardInfo = Cardinfo ::create([
-                'email' => $request->email, 
-            ]);
-        }
+     $cardInfo->save();
 
         $transaction = Transaction::create([
             'transactionid' => (string) \Str::uuid(),
-            'userid' => $user->userid, // Use the authenticated user ID
-            'paymentmethodid' => $paymentMethod->paymentid,
+            //for testing take it from the request
+            'userid' => $request->userid,
+            //'userid' => $user->userid,// Use the authenticated user ID if Auth
+            'address' => $request->address,
+            'city' => $request->city,
+            'state' => $request->state,
+            'zipcode' => $request->zipcode,
             'infoid' => $cardInfo->cardinfoid,
             'amount' => $request->amount,
             'paydate' => now(),
@@ -63,7 +74,7 @@ class PaymentGatewayController extends Controller
 
         return response()->json([
             'message' => 'Payment processed successfully.',
-            'transaction' => $transaction
+            'transaction' => $transaction   
         ]);
 
         //return redirect()->route('createUser')->with('welcomeMessage', $welcomeMessage);

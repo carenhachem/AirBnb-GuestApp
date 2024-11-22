@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('token');
             $table->string('refreshtoken');
             $table->uuid('loginmethodid');
-            $table->uuid('paymentmethodid')->nullable();
             $table->timestamp('created')->default(now());
             $table->timestamp('updated')->default(now());
         });

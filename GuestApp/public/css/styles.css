@@ -1,109 +1,100 @@
-body {
-    height: 100vh;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    border: none;
+    outline: none;
+    font-family: 'Poppins', sans-serif;
+    text-transform: capitalize;
+    transition: all 0.2s linear;
+}
+
+.container{
+    display: flex;
     justify-content: center;
     align-items: center;
+    min-height: 100vh;
+    padding: 25px;
+    background: #73B5BD;
+}
+
+.container form {
+    width: 700px;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.2);
+}
+
+.container form .row{
     display: flex;
-    background-color: #eee;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
-.launch {
-    height: 50px;
+.container form .row .col{
+    flex: 1 1 250px;
 }
 
-.close {
-    font-size: 21px;
-    cursor: pointer;
-}
-
-.modal-body {
-    height: 450px;
-}
-
-.nav-tabs {
-    border: none !important;
-}
-
-.nav-tabs .nav-link.active {
-    color: #495057;
-    background-color: #fff;
-    border-color: #ffffff #ffffff #fff;
-    border-top: 3px solid blue !important;
-}
-
-.nav-tabs .nav-link {
-    margin-bottom: -1px;
-    border: 1px solid transparent;
-    border-top-left-radius: 0rem;
-    border-top-right-radius: 0rem;
-    border-top: 3px solid #eee;
+.col .title{
     font-size: 20px;
+    color: #5e8f94;
+    padding-bottom: 5px;
 }
 
-.nav-tabs .nav-link:hover {
-    border-color: #e9ecef #ffffff #ffffff;
+.col .inputBox{
+    margin: 15px 0;
 }
 
-.nav-tabs {
-    display: table !important;
+.col .inputBox label{
+    margin-bottom: 10px;
+    display: block;
+}
+
+.col .inputBox input, .col .inputBox select{
     width: 100%;
+    border: 1px solid #ccc;
+    padding: 10px 15px;
+    font-size: 15px;
 }
 
-.nav-item {
-    display: table-cell;
+.col .inputBox input:focus, .col .inputBox select:focus{
+    border: 1px solid #000;
 }
 
-.form-control {
-    border-bottom: 1px solid #eee !important;
-    border: none;
-    font-weight: 600;
+.col .flex{
+    display: flex;
+    gap: 15px;
 }
 
-.form-control:focus {
-    color: #495057;
-    background-color: #fff;
-    border-color: #8bbafe;
-    outline: 0;
-    box-shadow: none;
+.col .flex .inputBox{
+    flex: 1 1;
+    margin-top: 5px;
 }
 
-.inputbox {
-    position: relative;
-    margin-bottom: 20px;
+.col .inputBox img{
+    height: 34px;
+    margin-top: 5px;
+    filter: drop-shadow(0 0 1px #000);
+}
+
+.container form .submit_btn{
     width: 100%;
+    padding: 12px;
+    font-size: 17px;
+    background: #5e8f94;
+    color: #fff;
+    margin-top: 5px;
+    cursor: pointer;
+    letter-spacing: 1px;
 }
 
-.inputbox span {
-    position: absolute;
-    top: 7px;
-    left: 11px;
-    transition: 0.5s;
+.container form .submit_btn:hover{
+    background: #73B5BD;
 }
 
-.inputbox i {
-    position: absolute;
-    top: 13px;
-    right: 8px;
-    transition: 0.5s;
-    color: #3F51B5;
-}
-
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-.inputbox input:focus~span {
-    transform: translateX(-0px) translateY(-15px);
-    font-size: 12px;
-}
-
-.inputbox input:valid~span {
-    transform: translateX(-0px) translateY(-15px);
-    font-size: 12px;
-}
-
-.pay button {
-    height: 47px;
-    border-radius: 37px;
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button{
+    display: none;
 }
