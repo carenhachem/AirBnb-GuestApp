@@ -26,11 +26,6 @@ return new class extends Migration
               ->references('loginmethodid')
               ->on('logins') 
               ->onDelete('set null'); 
-              $table->uuid('paymentmethodid')->nullable();
-            $table->foreign('paymentmethodid')
-              ->references('paymentid')
-              ->on('payments') 
-              ->onDelete('set null'); 
             $table->timestamp('created_at')->default(now());
             $table->timestamp('updated_at')->default(now());
             $table->string('google_id')->nullable();
