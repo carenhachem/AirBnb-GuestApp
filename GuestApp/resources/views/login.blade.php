@@ -22,12 +22,13 @@
       <div class="form-content">
         <header>Login</header>
         <form method="post" action="{{ route('login') }}"> 
+          @csrf <!-- Include CSRF Token -->
             <div class="field input-field">
-                <input type="text" name="email_or_username" placeholder="Email or Username" class="input" required>
-            </div>            
+                <input type="text" name="email_or_username" value="{{ old('email_or_username') }}" placeholder="Email or Username" class="input" required>
+            </div>     
 
             <div class="field input-field">
-                <input type="password" name = "password" placeholder="Password" class="input" id="password">
+                <input type="password" name = "password" placeholder="Password" class="input" id="password" required>
                 <i class="bx bx-hide eye-icon" id="eye-icon"></i>
             </div>
 

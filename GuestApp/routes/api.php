@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PaymentGatewayController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Models\User;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -24,5 +25,18 @@ Route::post('signup', [AuthController::class, 'store'])->name('user.store');
 
 Route::get('login', [AuthController::class, 'createLogin'])->name('user.login');
 Route::post('login', [AuthController::class, 'login'])->name('login');
+
+Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
+Route::middleware(['auth:sanctum', 'extractUserId'])->get('profile', [UserController::class, 'show'])->name('profile');
+
+Route::post('refresh-token', [AuthController::class, 'refresh']);
+
+Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
+Route::middleware(['auth:sanctum', 'extractUserId'])->get('profile', [UserController::class, 'show'])->name('profile');
+
+Route::post('refresh-token', [AuthController::class, 'refresh']);
+
 
 

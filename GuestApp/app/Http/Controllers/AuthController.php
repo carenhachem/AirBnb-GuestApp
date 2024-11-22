@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\RefreshToken;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\usertoken;
@@ -46,15 +47,38 @@ class AuthController extends Controller
         if ($user && \Illuminate\Support\Facades\Hash::check($request->password, $user->password)) {
             // Authentication passed, create a token for the user
             $token = $user->createToken('API Token')->plainTextToken;
+            // $accessToken = $user->tokens()->latest('userid')->first(); // Get the latest token
+            // $accessToken->expires_at = now()->addMinutes(60); // Set expiration (e.g., 60 minutes)
+            // $accessToken->save();
 
-            return response()->json([
-                'message' => 'Login successful!',
-                'token' => $token,
-            ], 200);
-           // return redirect()->intended('home');
+            $refreshToken = Str::random(60);  // You can customize this as needed
+            RefreshToken::create([
+                'refresh_token' => $refreshToken,
+                'userid' => $user->userid, // Assuming 'user_id' is the ID field for the user
+                'expires_at' => now()->addDays(30), // Set refresh token expiration
+            ]);
+
+            // return response()->json([
+            //     'message' => 'Login successful!',
+            //     'token' => $token,
+            //     'refresh_token' => $refreshToken,  // Send refresh token in the response
+            //     'profile_url' => route('profile'), // The URL for the user profile route
+
+            // ], 200);
+           //return redirect()->intended('home');
            //return redirect()->route('user.home')->with('userid', $user->userid);
+           return response()->json([
+            'message' => 'Login successful!',
+            'token' => $token,
+            'refresh_token' => $refreshToken,  // Send refresh token in the response
+            'profile_url' => route('profile'), // The URL for the user profile route
+        ], 200);
 
-        }
+        // return response()->json([
+        //     'access_token' => $token,
+        //     'refresh_token' => $refreshToken,
+        // ]);
+            }
 
         // Authentication failed
         return response()->json([
@@ -93,6 +117,7 @@ class AuthController extends Controller
 
         // Generate API token
         $token = $user->createToken('API Token')->plainTextToken;
+        $expiresAt = now()->addMinutes(60); // Example for token expiration
 
         // Return response with token
         return response()->json([
@@ -174,6 +199,61 @@ class AuthController extends Controller
             'token' => $token,
         ]);
     }
+
+    public function refresh(Request $request)
+    {
+        // Validate incoming refresh token
+        $request->validate([
+            'refresh_token' => 'required|string',
+        ]);
+
+        // Check if the refresh token is valid and not expired
+        $refreshToken = RefreshToken::where('refresh_token', $request->refresh_token)
+                                    ->where('expires_at', '>', now())
+                                    ->first();
+
+        if (!$refreshToken) {
+            return response()->json(['message' => 'Invalid or expired refresh token'], 401);
+        }
+
+        // Generate new API token
+        $user = $refreshToken->user;
+        $newToken = $user->createToken('API Token')->plainTextToken;
+
+        // Optionally, you can also generate a new refresh token here and store it
+        // $newRefreshToken = Str::random(60);
+        // RefreshToken::create([
+        //     'refresh_token' => $newRefreshToken,
+        //     'user_id' => $user->id,
+        //     'expires_at' => now()->addDays(30),
+        // ]);
+
+        // Return response with new token
+        return response()->json(['token' => $newToken]);
+    }
+
+    // In AuthController.php
+
+    public function logout(Request $request)
+    {
+        // Revoke the user's current access token
+        $request->user()->tokens->each(function ($token) {
+            $token->delete();
+        });
+
+        // Optionally, you can delete the refresh token from the database if you want
+        $refreshToken = RefreshToken::where('userid', $request->user()->userid)->first();
+        if ($refreshToken) {
+            $refreshToken->delete();
+        }
+
+        // Return a response indicating the user has logged out
+        return response()->json([
+            'message' => 'Logged out successfully',
+        ], 200);
+    }
+
+
 
     /**
      * Display the specified resource.

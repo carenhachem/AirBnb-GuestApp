@@ -47,6 +47,11 @@ class User extends Authenticatable
     }
 
 
+    public function refreshtoken()
+    {
+        return $this->hasOne(RefreshToken::class, 'userid', 'userid');
+    }
+
     /**
      * The attributes that are mass assignable.
      *
