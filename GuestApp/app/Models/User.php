@@ -6,11 +6,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
+
+    protected $primaryKey = 'userid';  // Set primary key to 'userid'
+    public $incrementing = false;     // UUIDs are not auto-incrementing
+    protected $keyType = 'uuid';
 
     function getLoginMethod(){
         return $this->belongsTo(login::class,'loginmethodid','loginmethodid');
@@ -31,6 +36,11 @@ class User extends Authenticatable
         return $this->hasMany(reservation::class, 'userid', 'userid');
     }
 
+    public function token()
+    {
+        return $this->hasOne(usertoken::class, 'userid', 'userid');
+    }
+
     public function getTransactions()
     {
         return $this->hasMany(Transaction::class, 'userid', 'userid');
@@ -43,9 +53,13 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        "userid",
+        'first_name',
+        'last_name',
         'email',
+        'username',
         'password',
+        'google_id'
     ];
 
     /**
@@ -70,4 +84,5 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    
 }

@@ -2,6 +2,10 @@
 
 return [
 
+//     'providers' => [
+//     // Other providers...
+//     Illuminate\Auth\AuthServiceProvider::class,
+// ],
     /*
     |--------------------------------------------------------------------------
     | Application Name

@@ -1,0 +1,201 @@
+/* Google Fonts - Poppins */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+
+/* General Body Styling */
+body {
+    font-family: "Poppins", sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #1a1a2e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #fff;
+}
+
+/* Main Container */
+.container {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 430px;
+    padding: 20px;
+    color: #000;
+    box-sizing: border-box;
+}
+
+/* Heading Styling */
+.signup-form h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #666;
+}
+
+/* Social Signup Buttons */
+.social-signup {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.social-button {
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.social-button.github {
+    background-color: #333;
+    color: #fff;
+}
+
+.social-button.github:hover {
+    background-color: #444;
+}
+
+.social-button.google {
+    background-color: #4285f4;
+    color: #fff;
+}
+
+.social-button.google:hover {
+    background-color: #357ae8;
+}
+
+/* Form Group Styling */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+    box-sizing: border-box;
+}
+
+#password-strength {
+    font-size: 12px;
+    margin-bottom: 15px;
+    margin-top: -10px;
+    color: #666;
+}
+
+#strength-indicator {
+    font-weight: bold;
+    color: #28a745;
+}
+
+/* Input Focus Effect */
+.form-group input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Submit Button */
+.submit-button {
+    width: 100%;
+    padding: 12px 16px;
+    background-color: #0171d3;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.submit-button:hover {
+    background-color: #574bdb;
+}
+
+/* Styling for the "Or sign up with credentials" text */
+.or-signup {
+    text-align: center;
+    font-size: 16px;
+    color: #666;
+    margin: 15px 0;
+}
+
+.or-signup::before,
+.or-signup::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    border-top: 1px solid #ccc;
+    transform: translateY(-50%);
+}
+
+.or-signup span {
+    background-color: #fff;
+    padding: 0 10px;
+    position: relative;
+    z-index: 1;
+    color: #333;
+}
+
+.line {
+    position: relative;
+    height: 1px;
+    width: 100%;
+    margin: 36px 0;
+    background-color: #d4d4d4;
+}
+
+.line::before {
+    content: "Or";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    color: #8b8b8b;
+    padding: 0 15px;
+}
+
+/* Links Styling */
+a {
+    color: #6c63ff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* "Already have an account?" link */
+.already-have-account {
+    margin-top: 15px;
+    font-size: 12px;
+    color: #555;
+}
+
+.already-have-account .link {
+    color: #0171d3;
+}
+
+.already-have-account .link:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .container {
+        padding: 15px;
+    }
+
+    .submit-button {
+        font-size: 14px;
+    }
+}
