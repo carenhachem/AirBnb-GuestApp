@@ -27,7 +27,7 @@
             </div>            
 
             <div class="field input-field">
-                <input type="password" placeholder="Password" class="input" id="password">
+                <input type="password" name = "password" placeholder="Password" class="input" id="password">
                 <i class="bx bx-hide eye-icon" id="eye-icon"></i>
             </div>
 

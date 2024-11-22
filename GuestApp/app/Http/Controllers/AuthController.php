@@ -47,11 +47,13 @@ class AuthController extends Controller
             // Authentication passed, create a token for the user
             $token = $user->createToken('API Token')->plainTextToken;
 
-            // return response()->json([
-            //     'message' => 'Login successful!',
-            //     'token' => $token,
-            // ], 200);
-            return redirect()->intended('home');
+            return response()->json([
+                'message' => 'Login successful!',
+                'token' => $token,
+            ], 200);
+           // return redirect()->intended('home');
+           //return redirect()->route('user.home')->with('userid', $user->userid);
+
         }
 
         // Authentication failed
@@ -123,19 +125,18 @@ class AuthController extends Controller
                 ]);
 
                 Auth::login($new_user);
-
+                $token = $new_user->createToken('API Token')->plainTextToken;
                 return redirect()->intended('home');
             }
             else{
                 Auth::login($user);
+                $token = $user->createToken('API Token')->plainTextToken;
                 return redirect()->intended('home');
             }
 
         } catch (\Throwable $th) {
             dd('something went wrong'.$th->getMessage());
-        }
-        
-       // $token = $user->createToken('API Token')->plainTextToken;
+        }        
     }
 
     // Redirect to Facebook

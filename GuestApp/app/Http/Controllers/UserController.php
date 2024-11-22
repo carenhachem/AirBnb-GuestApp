@@ -6,12 +6,24 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+
+    public function testUserid(Request $request)
+    {
+        // Retrieve the user ID from the authenticated user
+        $userId = $request->user()->userid;
+    
+        // Return a response with the user ID
+        return response()->json([
+            'message' => 'Hello, user with ID ' . $userId
+        ]);
+    }
+    
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        
+
     }
 
     public function create()

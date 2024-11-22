@@ -7,9 +7,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Route::get('/home', function () {
+//     return view('home');
+// })->middleware(['auth'])->name('home');
+
 Route::get('/home', function () {
     return view('home');
-})->middleware(['auth'])->name('home');
+});
 
 // Route::apiResource('user',AuthController::class);
 // Route::get('/signup', [AuthController::class, 'create'])->name('user.create');
