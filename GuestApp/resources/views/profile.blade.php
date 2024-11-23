@@ -25,13 +25,15 @@
             <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-change-password">Change password</a>
             {{-- <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-info">Info</a> --}}
             {{-- <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-social-links">Social links</a> --}}
-            <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-connections">Connections</a>
+            {{-- <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-connections">Connections</a> --}}
           </div>
         </div>
         <div class="col-md-9">
           <div class="tab-content">
             <div class="tab-pane fade active show" id="account-general">
-
+              <form action="{{ route('profile.update', $user->userid) }}" method="POST" id="updateProfileForm">
+                @csrf         
+                @method('PUT') 
               <div class="card-body media align-items-center">
                 <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" class="d-block ui-w-80">
                 <div class="media-body ml-4">
@@ -48,31 +50,32 @@
 
               <div class="card-body">
                 <div class="form-group">
-                  <label class="form-label">Username</label>
-                  <input type="text" class="form-control mb-1" value="{{ $user->username }}">
-                </div>
-                <div class="form-group">
-                  <label class="form-label">First Name</label>
-                  <input type="text" class="form-control" value="{{ $user->first_name }}">
+                  <label class="form-label">First Name</label> 
+                  <input type="text" class="form-control" name= "first_name" value="{{ $user->first_name }}">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Last Name</label>
-                    <input type="text" class="form-control" value="{{ $user->last_name }}">
+                    <input type="text" class="form-control" name= "last_name" value="{{ $user->last_name }}">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" class="form-control mb-1" name= "username" value="{{ $user->username }}">
                   </div>
                 <div class="form-group">
                   <label class="form-label">E-mail</label>
-                  <input type="text" class="form-control mb-1" value="{{ $user->email }}">
+                  <input type="text" class="form-control mb-1" value="{{ $user->email }}" disabled>
                   {{-- <div class="alert alert-warning mt-3">
                     Your email is not confirmed. Please check your inbox.<br>
                     <a href="javascript:void(0)">Resend confirmation</a>
                   </div> --}}
                 </div>
-                <div class="form-group">
+                {{-- <div class="form-group">
                   <label class="form-label">Company</label>
                   <input type="text" class="form-control" value="Company Ltd.">
-                </div>
+                </div> --}}
               </div>
-
+              <button type="submit" class="btn btn-primary" onclick="submitUpdateProfile()">Save changes</button>&nbsp;
+            </form>
             </div>
             <div class="tab-pane fade" id="account-change-password">
               <form action="{{ route('profile.change-password', $user->userid) }}" method="POST" id="changePasswordForm">
@@ -168,7 +171,7 @@
 
               </div>
             </div> --}}
-            <div class="tab-pane fade" id="account-connections">
+            {{-- <div class="tab-pane fade" id="account-connections">
               <div class="card-body">
                 <button type="button" class="btn btn-twitter">Connect to <strong>Twitter</strong></button>
               </div>
@@ -189,7 +192,7 @@
               <div class="card-body">
                 <button type="button" class="btn btn-instagram">Connect to <strong>Instagram</strong></button>
               </div>
-            </div>
+            </div> --}}
             {{-- <div class="tab-pane fade" id="account-notifications">
               <div class="card-body pb-2">
 
@@ -298,6 +301,27 @@
             data: formData,
             success: function(response) {
                 alert("Password changed successfully!");
+            },
+            error: function(xhr) {
+                alert("An error occurred. Please try again.");
+            }
+        });
+    }
+
+    function submitUpdateProfile() {
+        const form = $('#updateProfileForm'); // Cache the form element
+        const newFname = form.find('input[name="first_name"]').val();
+        const newLname = form.find('input[name="last_name"]').val();
+        const newUsername = form.find('input[name="username"]').val();
+
+        const formData = form.serialize(); // Serialize the form data
+
+        $.ajax({
+            url: form.attr('action'), // Get the form's action attribute
+            method: form.attr('method'), // Get the form's method attribute
+            data: formData,
+            success: function(response) {
+                alert("Profile changed successfully!");
             },
             error: function(xhr) {
                 alert("An error occurred. Please try again.");

@@ -14,7 +14,7 @@ Route::get('/', function () {
 
 Route::get('/home', function () {
     return view('home');
-});
+})->name('home');
 
 // Route::apiResource('user',AuthController::class);
 // Route::get('/signup', [AuthController::class, 'create'])->name('user.create');

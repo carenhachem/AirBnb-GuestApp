@@ -31,10 +31,10 @@ Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanct
 // Route::middleware('auth:sanctum')->get('/profile/{userId}', [User::class, 'show'])->name('profile');
 // Route::middleware(['auth:sanctum', 'extractUserId'])->get('profile', [UserController::class, 'show'])->name('profile');
 // Route::get('profile', [UserController::class, 'show'])->name('profile');
-// Route::put('change-password/{user}/update', [UserController::class, 'changePassword']);
 
 Route::get('/profile/{userid}', [UserController::class, 'showProfile'])->name('profile.show');
 Route::put('/profile/{userid}/change-password', [UserController::class, 'changePassword'])->name('profile.change-password');
+Route::put('/profile/{userid}/update', [UserController::class, 'updateProfile'])->name('profile.update');
 
 Route::post('refresh-token', [AuthController::class, 'refresh']);
 
