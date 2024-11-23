@@ -67,17 +67,19 @@ class AuthController extends Controller
             // ], 200);
            //return redirect()->intended('home');
            //return redirect()->route('user.home')->with('userid', $user->userid);
-           return response()->json([
-            'message' => 'Login successful!',
-            'token' => $token,
-            'refresh_token' => $refreshToken,  // Send refresh token in the response
-            'profile_url' => route('profile'), // The URL for the user profile route
-        ], 200);
+        //    return response()->json([
+        //     'message' => 'Login successful!',
+        //     'token' => $token,
+        //     'refresh_token' => $refreshToken,  // Send refresh token in the response
+        //     'profile_url' => route('profile.show', $user->userid), // The URL for the user profile route
+        // ], 200);
 
         // return response()->json([
         //     'access_token' => $token,
         //     'refresh_token' => $refreshToken,
         // ]);
+        return redirect()->route('profile.show', $user->userid)->with('success', 'User updated successfully!');
+
             }
 
         // Authentication failed

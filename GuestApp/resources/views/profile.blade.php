@@ -14,7 +14,7 @@
 <div class="container light-style flex-grow-1 container-p-y">
 
     <h4 class="font-weight-bold py-3 mb-4">
-      {{ $user->first_name }}'s Profile   
+      Profile   
     </h4>
 
     <div class="card overflow-hidden">
@@ -75,25 +75,33 @@
 
             </div>
             <div class="tab-pane fade" id="account-change-password">
-              <div class="card-body pb-2">
+              <form action="{{ route('profile.change-password', $user->userid) }}" method="POST" id="changePasswordForm">
+                @csrf         
+                @method('PUT')         
+                <div class="card-body pb-2">
+                      <div class="form-group">
+                          <label class="form-label">Current password</label>
+                          <input type="password" class="form-control" name="current_password">
+                      </div>
+          
+                      <div class="form-group">
+                          <label class="form-label">New password</label>
+                          <input type="password" class="form-control" name="new_password">
+                      </div>
+          
+                      <div class="form-group">
+                          <label class="form-label">Repeat new password</label>
+                          <input type="password" class="form-control" name="new_password_confirmation">
+                      </div>
+                  </div>
+                  <div class="text-right">
+                      {{-- <button type="button" class="btn btn-primary" onclick="submitChangePassword()">Save changes</button> --}}
+                      <button type="submit" class="btn btn-primary" onclick="submitChangePassword()">Save changes</button>
 
-                <div class="form-group">
-                  <label class="form-label">Current password</label>
-                  <input type="password" class="form-control">
-                </div>
-
-                <div class="form-group">
-                  <label class="form-label">New password</label>
-                  <input type="password" class="form-control">
-                </div>
-
-                <div class="form-group">
-                  <label class="form-label">Repeat new password</label>
-                  <input type="password" class="form-control">
-                </div>
-
-              </div>
-            </div>
+                    </div>
+              </form>
+          </div>
+          
             {{-- <div class="tab-pane fade" id="account-info">
               <div class="card-body pb-2">
 
@@ -267,7 +275,38 @@
     </div>
 
   </div>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+  <script>
+    function submitChangePassword() {
+        const form = $('#changePasswordForm'); // Cache the form element
+        const newPassword = form.find('input[name="new_password"]').val();
+        const confirmPassword = form.find('input[name="new_password_confirmation"]').val();
+
+        // Check if passwords match
+        if (newPassword !== confirmPassword) {
+            alert("Passwords do not match!");
+            return;
+        }
+
+        const formData = form.serialize(); // Serialize the form data
+
+        $.ajax({
+            url: form.attr('action'), // Get the form's action attribute
+            method: form.attr('method'), // Get the form's method attribute
+            data: formData,
+            success: function(response) {
+                alert("Password changed successfully!");
+            },
+            error: function(xhr) {
+                alert("An error occurred. Please try again.");
+            }
+        });
+    }
+</script>
+
+    
 </body>
 </html>
 
