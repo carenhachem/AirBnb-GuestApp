@@ -9,7 +9,11 @@ class accomodation extends Model
 {
     use HasFactory;
 
-    function getPolicies()
+    protected $primaryKey = 'accomodationid'; 
+    public $incrementing = false;     
+    protected $keyType = 'uuid';
+
+    function policies()
     {
         return $this->belongsToMany(
             policy::class,
@@ -18,7 +22,7 @@ class accomodation extends Model
             'policyid');
     }
 
-    function getAmenities()
+    function amenities()
     {
         return $this->belongsToMany(
             amenity::class,
@@ -27,26 +31,26 @@ class accomodation extends Model
             'amenityid');
     }
 
-    function getAccomodationType(){
+    function accomodationType(){
         return $this->belongsTo(accomodationtype::class,'typeid','typeid');
     }
 
-    public function getWishlists()
+    public function wishlists()
     {
         return $this->hasMany(wishlist::class, 'accomodationid', 'accomodationid');
     }
 
-    public function getReviews()
+    public function reviews()
     {
         return $this->hasMany(review::class, 'accomodationid', 'accomodationid');
     }
 
-    public function getReservations()
+    public function reservations()
     {
         return $this->hasMany(reservation::class, 'accomodationid', 'accomodationid');
     }
 
-    public function getLocation()
+    public function location()
     {
         return $this->belongsTo(accomodationlocation::class, 'locationid', 'locationid');
     }

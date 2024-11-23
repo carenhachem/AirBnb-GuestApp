@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -35,6 +36,8 @@ Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanct
 Route::get('/profile/{userid}', [UserController::class, 'showProfile'])->name('profile.show');
 Route::put('/profile/{userid}/change-password', [UserController::class, 'changePassword'])->name('profile.change-password');
 Route::put('/profile/{userid}/update', [UserController::class, 'updateProfile'])->name('profile.update');
+
+Route::get('/reservations/{userid}', [ReservationController::class, 'index'])->name('booking-history');
 
 Route::post('refresh-token', [AuthController::class, 'refresh']);
 

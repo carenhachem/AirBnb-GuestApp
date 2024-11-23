@@ -9,12 +9,16 @@ class reservation extends Model
 {
     use HasFactory;
 
-    public function getUser()
+    protected $primaryKey = 'reservationid';  
+    public $incrementing = false;     
+    protected $keyType = 'uuid';
+
+    public function user()
     {
         return $this->belongsTo(User::class, 'userid', 'userid');
     }
 
-    public function getAccomodation()
+    public function accomodation()
     {
         return $this->belongsTo(accomodation::class, 'accomodationid', 'accomodationid');
     }
