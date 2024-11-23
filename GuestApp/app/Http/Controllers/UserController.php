@@ -128,6 +128,26 @@ class UserController extends Controller
 
         return redirect()->route('profile.show', $user->userid)->with('success', 'User updated successfully!');
     }
+
+    public function updateProfile(Request $request, $userid)
+    {
+        $request->validate([
+            'first_name' => 'required|string|max:50',
+            'last_name' => 'required|string|max:50',
+            'username' => 'required|string|max:50',
+        ]);
+
+        $user = User::findOrFail($userid); // Fetch the user
+
+        // Update the user's password
+        $user->first_name = $request->first_name;
+        $user->last_name = $request->last_name;
+        $user->username = $request->username;
+        $user->updated_at = now();
+        $user->save();
+
+        return redirect()->route('home')->with('success', 'User updated successfully!');
+    }
     
 
 //     public function show(Request $request)
