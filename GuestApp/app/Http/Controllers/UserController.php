@@ -132,21 +132,26 @@ class UserController extends Controller
     public function updateProfile(Request $request, $userid)
     {
         $request->validate([
+            'profilepic' => 'file',
             'first_name' => 'required|string|max:50',
             'last_name' => 'required|string|max:50',
-            'username' => 'required|string|max:50',
         ]);
 
         $user = User::findOrFail($userid); // Fetch the user
 
-        // Update the user's password
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
-        $user->username = $request->username;
+
+        if ($request->hasFile('profilepic')) {
+            $file = $request->file('profilepic');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads/profiles'), $filename); // Save file in 'uploads/thumbnails'
+            $user->profilepic = $filename; // Update thumbnail
+        }
         $user->updated_at = now();
         $user->save();
 
-        return redirect()->route('home')->with('success', 'User updated successfully!');
+        return back()->with('success', 'Profile changed successfully.');
     }
     
 

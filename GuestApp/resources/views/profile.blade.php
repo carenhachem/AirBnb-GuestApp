@@ -31,15 +31,17 @@
         <div class="col-md-9">
           <div class="tab-content">
             <div class="tab-pane fade active show" id="account-general">
-              <form action="{{ route('profile.update', $user->userid) }}" method="POST" id="updateProfileForm">
+              <form action="{{ route('profile.update', $user->userid) }}" method="POST" id="updateProfileForm" enctype="multipart/form-data">
                 @csrf         
                 @method('PUT') 
               <div class="card-body media align-items-center">
-                <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" class="d-block ui-w-80">
+                <img src="{{ $user->profilepic ? asset('uploads/profiles/' . $user->profilepic) :'https://bootdey.com/img/Content/avatar/avatar1.png' }}" alt="" class="d-block ui-w-80">
+                {{-- <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" class="d-block ui-w-80"> --}}
                 <div class="media-body ml-4">
                   <label class="btn btn-outline-primary">
                     Upload new photo
-                    <input type="file" class="account-settings-fileinput">
+                    <input type="file" name="profilepic" class="account-settings-fileinput">
+                    {{-- <input type="file" class="account-settings-fileinput"> --}}
                   </label> &nbsp;
                   {{-- <button type="button" class="btn btn-default md-btn-flat">Reset</button> --}}
 
@@ -59,7 +61,7 @@
                   </div>
                   <div class="form-group">
                     <label class="form-label">Username</label>
-                    <input type="text" class="form-control mb-1" name= "username" value="{{ $user->username }}">
+                    <input type="text" class="form-control mb-1" value="{{ $user->username }}" disabled>
                   </div>
                 <div class="form-group">
                   <label class="form-label">E-mail</label>
@@ -74,7 +76,7 @@
                   <input type="text" class="form-control" value="Company Ltd.">
                 </div> --}}
               </div>
-              <button type="submit" class="btn btn-primary" onclick="submitUpdateProfile()">Save changes</button>&nbsp;
+              <button type="submit" class="btn btn-primary" >Save changes</button>&nbsp;
             </form>
             </div>
             <div class="tab-pane fade" id="account-change-password">
