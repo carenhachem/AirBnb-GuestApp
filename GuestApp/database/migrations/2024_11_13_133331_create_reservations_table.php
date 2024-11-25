@@ -13,14 +13,24 @@ return new class extends Migration
     {
         Schema::create('reservations', function (Blueprint $table) {
             $table->uuid('reservationid')->primary();
-            $table->uuid('userid');
+            $table->uuid('userid'); 
+            $table->foreign('userid')
+              ->references('userid')
+              ->on('users') 
+              ->onDelete('cascade');
             $table->uuid('accomodationid');
+            $table->foreign('accomodationid')
+              ->references('accomodationid')
+              ->on('accomodations') 
+              ->onDelete('cascade');
             $table->date('checkin');
             $table->date('checkout');
             $table->double('totalprice');
             $table->boolean('isreserved')->default(true);
             $table->timestamp('created')->default(now());
             $table->timestamp('updated')->default(now());
+            $table->timestamp('created_at');
+            $table->timestamp('updated_at');
         });
     }
 

@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\reservation;
 use Illuminate\Http\Request;
-use app\Models\accomodation;
 
 class ReservationController extends Controller
 {
-    //joe will call /api/reservation{id} the id will be accomodations.accomodationid
-    
-    public function reserve(accomodation $accomodation, Request $request)
+    public function index($userid)
     {
-       
+        // Fetch reservations from the database
+        // $reservations = reservation::where('userid', auth()->id()) // Optional: Filter by authenticated user
+        $bookings = reservation::with('accomodation') // Eager load accommodation
+            ->where('userid', $userid) // Filter by the logged-in user's ID
+            ->orderBy('created', 'desc') // Order by creation date or other criteria
+            ->get();
 
-      
-        return; 
+        // Return the view with the bookings data
+        return view('bookinghistory', compact('bookings'));
     }
 }

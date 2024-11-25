@@ -29,6 +29,8 @@ return new class extends Migration
             $table->timestamp('created_at')->default(now());
             $table->timestamp('updated_at')->default(now());
             $table->string('google_id')->nullable();
+            $table->string('facebook_id')->nullable();
+            $table->string('profilepic')->nullable();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

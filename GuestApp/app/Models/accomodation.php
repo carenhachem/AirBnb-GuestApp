@@ -6,10 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Accomodation extends Model
 {
+    //check function amenities() and wishlists() : same return type... 
+    use HasFactory;
+
     protected $table = 'accomodations';
-    protected $primaryKey = 'accomodationid';
-    public $incrementing = false;
-    protected $keyType = 'string';
+    protected $primaryKey = 'accomodationid'; 
+    public $incrementing = false;     
+    protected $keyType = 'uuid';  // or string from joe
 
     protected $fillable = [
         'description',
@@ -22,25 +25,49 @@ class Accomodation extends Model
         'isactive',
     ];
 
-    // Relationships
+    function policies()
+    {
+        return $this->belongsToMany(
+            policy::class,
+            'accomodationpolicies',
+            'accomodationid',
+            'policyid');
+    }
+
+    public function location()
+    {
+        return $this->belongsTo(AccomodationLocation::class, 'locationid', 'locationid');
+    }
+
     public function type()
-{
-    return $this->belongsTo(AccomodationType::class, 'typeid', 'typeid');
-}
-
-
-public function location()
-{
-    return $this->belongsTo(AccomodationLocation::class, 'locationid', 'locationid');
-}
-
+    {
+        return $this->belongsTo(AccomodationType::class, 'typeid', 'typeid');
+    }
 
     public function amenities()
     {
         return $this->belongsToMany(Amenity::class, 'accomodationamenities', 'accomodationid', 'amenityid');
     }
 
-    // Query Scopes
+    public function wishlists()
+    {
+        return $this->belongsToMany(Amenity::class, 'accomodationamenities', 'accomodationid', 'amenityid');
+    }
+
+    public function reviews()
+    {
+        return $query->whereBetween('pricepernight', [$minPrice, $maxPrice]);
+    }
+
+    public function reservations()
+    {
+        return $query->whereHas('type', function ($q) use ($type) {
+            $q->where('accomodationdesc', $type);
+        });
+    }
+
+    //scopes
+
     public function scopePriceRange($query, $minPrice, $maxPrice)
     {
         return $query->whereBetween('pricepernight', [$minPrice, $maxPrice]);

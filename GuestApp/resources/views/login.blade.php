@@ -21,10 +21,10 @@
     <div class="form login">
       <div class="form-content">
         <header>Login</header>
-        <form method="post" action="{{ route('login') }}"> 
+        <form method="post" action="{{ route('login.post') }}"> 
           @csrf <!-- Include CSRF Token -->
             <div class="field input-field">
-                <input type="text" name="email_or_username" value="{{ old('email_or_username') }}" placeholder="Email or Username" class="input" required>
+                <input type="text" name="email" value="{{ old('email') }}" placeholder="Email or Username" class="input" required>
             </div>     
 
             <div class="field input-field">
@@ -42,7 +42,7 @@
         </form>
 
         <div class="form-link">
-          <span>Don't have an account? <a href="{{ route('user.create') }}" class="link signup-link">Signup</a></span>
+          {{-- <span>Don't have an account? <a href="{{ route('user.create') }}" class="link signup-link">Signup</a></span> --}}
         </div>
       </div>
 
@@ -65,7 +65,7 @@
     </div>
 
   <!-- JavaScript -->
-  <script>const eyeIcon = document.getElementById("eye-icon");
+  {{-- <script>const eyeIcon = document.getElementById("eye-icon");
     const passwordInput = document.getElementById("password");
     
     eyeIcon.addEventListener("click", () => {
@@ -80,7 +80,7 @@
             eyeIcon.classList.add("bx-hide"); // Hide icon class
         }
     });
-    </script>
+    </script> --}}
 </body>
 
 </html>
