@@ -189,6 +189,20 @@ a:hover {
     text-decoration: underline;
 }
 
+.alert {
+    background-color: #f44336; /* Red background */
+    color: white; /* White text color */
+    padding: 8px 12px; /* Smaller padding */
+    border-radius: 4px; /* Slightly smaller rounded corners */
+    margin-bottom: 10px; /* Reduced space below the alert */
+    font-size: 12px; /* Smaller font size */
+    font-weight: normal; /* Normal text weight */
+    display: flex; /* Flexbox for alignment */
+    align-items: center; /* Vertically center content */
+    justify-content: space-between; /* Space between icon and text */
+    border-left: 3px solid #d32f2f; /* Thinner left border */
+}
+
 /* Responsive Design */
 @media (max-width: 480px) {
     .container {

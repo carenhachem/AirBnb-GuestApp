@@ -30,7 +30,6 @@ class AuthController extends Controller
     {
         return view('login');
     }    
-
  
 
     public function login(Request $request)
@@ -38,7 +37,7 @@ class AuthController extends Controller
         // Validate input
         $request->validate([
             'username_or_email' => 'required',
-            'password' => 'required|min:3',
+            'password' => 'required',
         ]);
     
         $credentials = [
@@ -68,7 +67,7 @@ class AuthController extends Controller
             return redirect()->route('profile')->with('success', "Logged in! User ID: {$user->userid}");
         }
 
-        return back()->withErrors(['email' => 'Invalid credentials.'])->withInput();
+        return back()->withErrors(['error' => 'Wrong credentials.'])->withInput();
     }
 
     /**
@@ -197,14 +196,6 @@ class AuthController extends Controller
         // Generate new API token
         $user = $refreshToken->user;
         $newToken = $user->createToken('API Token')->plainTextToken;
-
-        // Optionally, you can also generate a new refresh token here and store it
-        // $newRefreshToken = Str::random(60);
-        // RefreshToken::create([
-        //     'refresh_token' => $newRefreshToken,
-        //     'user_id' => $user->id,
-        //     'expires_at' => now()->addDays(30),
-        // ]);
 
         // Return response with new token
         return response()->json(['token' => $newToken]);

@@ -23,6 +23,12 @@
         <header>Login</header>
         <form method="post" action="{{ route('login.post') }}"> 
           @csrf <!-- Include CSRF Token -->
+          @if($errors->has('error'))
+            <div class="alert alert-danger">
+              {{ $errors->first('error') }}
+            </div>
+        @endif
+
             <div class="field input-field">
                 <input type="text" name="username_or_email" value="{{ old('username_or_email') }}" placeholder="Email or Username" class="input" required>
             </div>     
@@ -65,7 +71,7 @@
     </div>
 
   <!-- JavaScript -->
-  {{-- <script>const eyeIcon = document.getElementById("eye-icon");
+  <script>const eyeIcon = document.getElementById("eye-icon");
     const passwordInput = document.getElementById("password");
     
     eyeIcon.addEventListener("click", () => {
@@ -80,7 +86,7 @@
             eyeIcon.classList.add("bx-hide"); // Hide icon class
         }
     });
-    </script> --}}
+    </script>
 </body>
 
 </html>

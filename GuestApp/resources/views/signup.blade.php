@@ -28,37 +28,37 @@
 
                 <div class="form-group">
                     <input type="text" name="first_name" id="first-name" placeholder="First Name" required value="{{ old('first_name') }}">
-                    {{-- @error('first_name')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror --}}
+                    @error('first_name')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="form-group">
                     <input type="text" name="last_name" id="last-name" placeholder="Last Name" required value="{{ old('last_name') }}">
-                    {{-- @error('last_name')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror --}}
+                    @error('last_name')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="form-group">
                     <input type="email" name="email" id="email" placeholder="Email" required value="{{ old('email') }}">
-                    {{-- @error('email')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror --}}
+                    @error('email')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="form-group">
                     <input type="text" name="username" id="username" placeholder="Username" required value="{{ old('username') }}">
-                    {{-- @error('username')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror --}}
+                    @error('username')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="form-group">
                     <input type="password" name="password" id="password" placeholder="Password" required>
-                    {{-- @error('password')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror --}}
+                    @error('password')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div id="password-strength" style="display: none;">

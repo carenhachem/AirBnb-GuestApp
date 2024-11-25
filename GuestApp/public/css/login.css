@@ -203,6 +203,16 @@ a.google span {
     color: #232836;
 }
 
+.alert {
+    color: #d9534f;
+    background-color: #f8d7da;
+    border: 1px solid #f5c2c7;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
 @media screen and (max-width: 400px) {
     .form {
         padding: 20px 10px;

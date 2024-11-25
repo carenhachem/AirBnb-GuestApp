@@ -28,6 +28,15 @@
               <form action="{{ route('profile.update', $user->userid) }}" method="POST" id="updateProfileForm" enctype="multipart/form-data">
                 @csrf
                 @method('PUT') 
+                @if ($errors->any())
+                  <div class="alert">
+                      <ul>
+                          @foreach ($errors->all() as $error)
+                              <li>{{ $error }}</li>
+                          @endforeach
+                      </ul>
+                  </div>
+                @endif 
                 <div class="card-body media align-items-center">
                   <img src="{{ $user->profilepic ? asset('uploads/profiles/' . $user->profilepic) :'https://bootdey.com/img/Content/avatar/avatar1.png' }}" 
                        alt="" class="d-block ui-w-80">
@@ -64,7 +73,16 @@
             <div class="tab-pane fade" id="account-change-password">
               <form action="{{ route('profile.change-password', $user->userid) }}" method="POST" id="changePasswordForm">
                 @csrf
-                @method('PUT') 
+                @method('PUT')
+                @if ($errors->any())
+                  <div class="alert">
+                      <ul>
+                          @foreach ($errors->all() as $error)
+                              <li>{{ $error }}</li>
+                          @endforeach
+                      </ul>
+                  </div>
+                @endif 
                 <div class="card-body pb-2">
                   <div class="form-group">
                     <label class="form-label">Current Password</label>

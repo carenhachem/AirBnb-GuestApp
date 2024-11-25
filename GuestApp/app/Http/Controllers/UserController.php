@@ -21,25 +21,6 @@ class UserController extends Controller
 
     }
 
-    // public function create()
-    // {
-    //     return view('login');
-    // }  
-    
-    // public function createProfile()
-    // {
-    //     return view('profile');
-    // }  
-
-    // public function showProfile()
-    // {
-    // // Get the authenticated user from the token
-    // $user = Auth::user();
-
-    // // Pass the user data to the view
-    // return view('profile', ['user' => $user]);
-    // }
-
     /**
      * Store a newly created resource in storage.
      */
@@ -48,46 +29,7 @@ class UserController extends Controller
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
-    // public function show()
-    // {
-    //     // Access the user ID that was added by the middleware
-    //     $userId = "09bb20af-0886-48df-9d72-de49c95c5de1";
-    
-    //     // Retrieve the user using the extracted user ID
-    //     $user = User::findOrFail($userId);
-    
-    //     // Pass the user data to the Blade view
-    //     return view('profile', compact('user'));
-    // }
 
-    // public function changePassword(Request $request, string $id)
-    // {
-    //     $request->validate([
-    //         'current_password' => 'required',
-    //         'new_password' => 'required|min:8|confirmed', // `confirmed` ensures it matches `new_password_confirmation`
-    //     ]);
-
-    //     $user = User::findOrFail($id);
-
-    //     //$user = $request->user();
-
-    //     // Check if current password matches
-    //     if (!Hash::check($request->current_password, $user->password)) {
-    //         return response()->json(['message' => 'Current password is incorrect.'], 400);
-    //     }
-
-    //     // Update to the new password
-    //     $user->password = Hash::make($request->new_password);
-    //     $user->save();
-
-    //     return response()->json(['message' => 'Password changed successfully.'], 200);
-    // }
-
-
-    // Show change password form
     public function showProfile()
     {
         if (Auth::check()) {
@@ -108,12 +50,18 @@ class UserController extends Controller
         return view('profile', ['user' => $user]); // Pass user data to the blade view
     }
 
-    // Handle password change
+
     public function changePassword(Request $request)
     {
         $request->validate([
             'current_password' => 'required',
             'new_password' => 'required|string|min:4|confirmed'
+        ], [
+            'current_password.required' => 'Current password is required.',
+            'new_password.required' => 'New password is required.',
+            'new_password.string' => 'New password must be a string.',
+            'new_password.min' => 'New password must be at least 4 characters long.',
+            'new_password.confirmed' => 'The new password confirmation does not match.',
         ]);
 
         $user = Auth::user();
@@ -124,9 +72,7 @@ class UserController extends Controller
 
         // Verify the current password
         if (!Hash::check($request->current_password, $user->password)) {
-            throw ValidationException::withMessages([
-                'current_password' => 'The current password is incorrect.',
-            ]);
+            return back()->withErrors(['current_password' => 'The current password is incorrect.'])->withInput();
         }
 
         DB::table('users')->where('userid', $user->userid)->update($data);
@@ -134,12 +80,23 @@ class UserController extends Controller
         return redirect()->route('profile')->with('success', 'User updated successfully!');
     }
 
+
     public function updateProfile(Request $request)
     {
         $request->validate([
             'profilepic' => 'file',
             'first_name' => 'required|string|max:50',
             'last_name' => 'required|string|max:50',
+        ], [
+            'profilepic.file' => 'The profile picture must be a valid file.',
+            'profilepic.mimes' => 'The profile picture must be a JPG, JPEG, PNG, or GIF.',
+            'profilepic.max' => 'The profile picture size must not exceed 800 KB.',
+            'first_name.required' => 'First name is required.',
+            'first_name.string' => 'First name must be a valid string.',
+            'first_name.max' => 'First name must not exceed 50 characters.',
+            'last_name.required' => 'Last name is required.',
+            'last_name.string' => 'Last name must be a valid string.',
+            'last_name.max' => 'Last name must not exceed 50 characters.',
         ]);
 
         $user = Auth::user();
@@ -160,20 +117,6 @@ class UserController extends Controller
 
         return back()->with('success', 'Profile changed successfully.');
     }
-    
-
-//     public function show(Request $request)
-// {
-//     // Access the user ID that was added by the middleware
-//     $userId = $request->userid;
-
-//     // Retrieve the user using the extracted user ID
-//     $user = User::findOrFail($userId);
-
-//     // Return the user data
-//     return response()->json($user);
-// }
-
 
     /**
      * Update the specified resource in storage.
