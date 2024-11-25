@@ -5,25 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
-{
-
-    public function testUserid(Request $request)
-    {
-        // Retrieve the user ID from the authenticated user
-        $userId = $request->user()->userid;
-    
-        // Return a response with the user ID
-        return response()->json([
-            'message' => 'Hello, user with ID ' . $userId
-        ]);
-    }
-    
+{   
     /**
      * Display a listing of the resource.
      */
@@ -120,14 +109,18 @@ class UserController extends Controller
     }
 
     // Handle password change
-    public function changePassword(Request $request, $userid)
+    public function changePassword(Request $request)
     {
         $request->validate([
             'current_password' => 'required',
             'new_password' => 'required|string|min:4|confirmed'
         ]);
 
-        $user = User::findOrFail($userid); // Fetch the user
+        $user = Auth::user();
+        $data = [
+            'password' => Hash::make($request->new_password),
+            'updated_at' => now(),
+        ];
 
         // Verify the current password
         if (!Hash::check($request->current_password, $user->password)) {
@@ -136,15 +129,12 @@ class UserController extends Controller
             ]);
         }
 
-        // Update the user's password
-        $user->password = Hash::make($request->new_password);
-        $user->updated_at = now();
-        $user->save();
+        DB::table('users')->where('userid', $user->userid)->update($data);
 
-        return redirect()->route('profile.show', $user->userid)->with('success', 'User updated successfully!');
+        return redirect()->route('profile')->with('success', 'User updated successfully!');
     }
 
-    public function updateProfile(Request $request, $userid)
+    public function updateProfile(Request $request)
     {
         $request->validate([
             'profilepic' => 'file',
@@ -152,10 +142,12 @@ class UserController extends Controller
             'last_name' => 'required|string|max:50',
         ]);
 
-        $user = User::findOrFail($userid); // Fetch the user
-
-        $user->first_name = $request->first_name;
-        $user->last_name = $request->last_name;
+        $user = Auth::user();
+        $data = [
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'updated_at' => now(),
+        ];
 
         if ($request->hasFile('profilepic')) {
             $file = $request->file('profilepic');
@@ -163,8 +155,8 @@ class UserController extends Controller
             $file->move(public_path('uploads/profiles'), $filename); // Save file in 'uploads/thumbnails'
             $user->profilepic = $filename; // Update thumbnail
         }
-        $user->updated_at = now();
-        $user->save();
+
+        DB::table('users')->where('userid', $user->userid)->update($data);
 
         return back()->with('success', 'Profile changed successfully.');
     }

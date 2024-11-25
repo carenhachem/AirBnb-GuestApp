@@ -33,6 +33,7 @@ Route::get('/signup', [AuthController::class, 'create'])->name('user.create');
 Route::post('signup', [AuthController::class, 'store'])->name('user.store');
 
 Route::get('/profile', [UserController::class, 'showProfile'])->middleware('auth')->name('profile');
+Route::put('/profile/change-password', [UserController::class, 'changePassword'])->middleware('auth')->name('profile.change-password');
+Route::put('/profile/update', [UserController::class, 'updateProfile'])->middleware('auth')->name('profile.update');
 
-// Route::get('profile', [UserController::class, 'show'])->name('profile');
 
