@@ -31,74 +31,31 @@ class AuthController extends Controller
         return view('login');
     }    
 
-    // Login using email or username and password
-    // public function login(Request $request)
-    // {
-    //     // Validate the incoming request
-    //     $request->validate([
-    //         'email_or_username' => 'required|string', // email or username field
-    //         'password' => 'required|string',
-    //     ]);
-
-    //     // Attempt to login by email or username
-    //     $user = User::where('email', $request->email_or_username)
-    //         ->orWhere('username', $request->email_or_username)
-    //         ->first();
-
-    //     if ($user && \Illuminate\Support\Facades\Hash::check($request->password, $user->password)) {
-    //         // Authentication passed, create a token for the user
-    //         $token = $user->createToken('API Token')->plainTextToken;
-    //         // $accessToken = $user->tokens()->latest('userid')->first(); // Get the latest token
-    //         // $accessToken->expires_at = now()->addMinutes(60); // Set expiration (e.g., 60 minutes)
-    //         // $accessToken->save();
-
-    //         $refreshToken = Str::random(60);  // You can customize this as needed
-    //         RefreshToken::create([
-    //             'refresh_token' => $refreshToken,
-    //             'userid' => $user->userid, // Assuming 'user_id' is the ID field for the user
-    //             'expires_at' => now()->addDays(30), // Set refresh token expiration
-    //         ]);
-
-    //         // return response()->json([
-    //         //     'message' => 'Login successful!',
-    //         //     'token' => $token,
-    //         //     'refresh_token' => $refreshToken,  // Send refresh token in the response
-    //         //     'profile_url' => route('profile'), // The URL for the user profile route
-
-    //         // ], 200);
-    //        //return redirect()->intended('home');
-    //        //return redirect()->route('user.home')->with('userid', $user->userid);
-    //     //    return response()->json([
-    //     //     'message' => 'Login successful!',
-    //     //     'token' => $token,
-    //     //     'refresh_token' => $refreshToken,  // Send refresh token in the response
-    //     //     'profile_url' => route('profile.show', $user->userid), // The URL for the user profile route
-    //     // ], 200);
-
-    //     // return response()->json([
-    //     //     'access_token' => $token,
-    //     //     'refresh_token' => $refreshToken,
-    //     // ]);
-    //     return redirect()->route('profile.show', $user->userid)->with('success', 'User updated successfully!');
-
-    //         }
-
-    //     // Authentication failed
-    //     return response()->json([
-    //         'message' => 'Invalid credentials',
-    //     ], 401);
-    // }
+ 
 
     public function login(Request $request)
     {
         // Validate input
         $request->validate([
-            'email' => 'required|email',
+            'username_or_email' => 'required',
             'password' => 'required|min:3',
         ]);
-
-        // Attempt to login the user
-        if (Auth::attempt($request->only('email', 'password'))) {
+    
+        $credentials = [
+            'password' => $request->password,
+        ];
+    
+        // Determine if the input is an email or username
+        if (filter_var($request->username_or_email, FILTER_VALIDATE_EMAIL)) {
+            // It's an email
+            $credentials['email'] = $request->username_or_email;
+        } else {
+            // It's a username
+            $credentials['username'] = $request->username_or_email;
+        }
+    
+        // Attempt to log the user in
+        if (Auth::attempt($credentials)) {
             // Retrieve authenticated user's ID
             $user = Auth::user();
 
@@ -142,15 +99,9 @@ class AuthController extends Controller
             'password' => $userData['password'],
         ]);
 
-        // Generate API token
-        $token = $user->createToken('API Token')->plainTextToken;
-        $expiresAt = now()->addMinutes(60); // Example for token expiration
+        Auth::login($user);
 
-        // Return response with token
-        return response()->json([
-            'message' => 'Registration successful!',
-            'token' => $token,
-        ], 201);
+        return redirect()->route('profile')->with('success', "Signed up! User ID: {$user->userid}");
     }
 
     // Redirect to Google

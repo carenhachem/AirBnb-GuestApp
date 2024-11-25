@@ -24,7 +24,7 @@
         <form method="post" action="{{ route('login.post') }}"> 
           @csrf <!-- Include CSRF Token -->
             <div class="field input-field">
-                <input type="text" name="email" value="{{ old('email') }}" placeholder="Email or Username" class="input" required>
+                <input type="text" name="username_or_email" value="{{ old('username_or_email') }}" placeholder="Email or Username" class="input" required>
             </div>     
 
             <div class="field input-field">
@@ -42,7 +42,7 @@
         </form>
 
         <div class="form-link">
-          {{-- <span>Don't have an account? <a href="{{ route('user.create') }}" class="link signup-link">Signup</a></span> --}}
+          <span>Don't have an account? <a href="{{ route('user.create') }}" class="link signup-link">Signup</a></span>
         </div>
       </div>
 

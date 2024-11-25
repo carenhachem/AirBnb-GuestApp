@@ -29,6 +29,9 @@ Route::get('login/facebook/callback', [AuthController::class, 'handleFacebookCal
 Route::get('/login', [AuthController::class, 'createLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 
+Route::get('/signup', [AuthController::class, 'create'])->name('user.create');
+Route::post('signup', [AuthController::class, 'store'])->name('user.store');
+
 Route::get('/profile', [UserController::class, 'showProfile'])->middleware('auth')->name('profile');
 
 // Route::get('profile', [UserController::class, 'show'])->name('profile');
