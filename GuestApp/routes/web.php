@@ -26,5 +26,10 @@ Route::get('auth/google/call-back', [AuthController::class, 'callbackGoogle']);
 Route::get('login/facebook', [AuthController::class, 'redirectToFacebook'])->name('login.facebook');
 Route::get('login/facebook/callback', [AuthController::class, 'handleFacebookCallback']);
 
+Route::get('/login', [AuthController::class, 'createLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+
+Route::get('/profile', [UserController::class, 'showProfile'])->middleware('auth')->name('profile');
+
 // Route::get('profile', [UserController::class, 'show'])->name('profile');
 

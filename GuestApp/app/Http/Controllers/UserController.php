@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -98,9 +99,23 @@ class UserController extends Controller
 
 
     // Show change password form
-    public function showProfile($userid)
+    public function showProfile()
     {
-        $user = User::findOrFail($userid); // Fetch user or throw 404 if not found
+        if (Auth::check()) {
+            Log::info('User is authenticated.');
+        } else {
+            Log::info('User is not authenticated.');
+        }
+        
+        Log::info('hi');
+
+        $user = Auth::user();
+
+        Log::info('Authenticated user accessed the profile page', [
+            'userid' => $user->userid,
+            'email' => $user->email,
+        ]);
+
         return view('profile', ['user' => $user]); // Pass user data to the blade view
     }
 

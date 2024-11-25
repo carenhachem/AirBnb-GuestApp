@@ -7,25 +7,27 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+
+
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
 //for testing middleware:
-Route::middleware(['auth:sanctum', 'extractUserId'])->get('/user', function (Request $request) {
-    return response()->json([
-        'userid' => $request->userid,
-    ]);
-});
+// Route::middleware(['auth:sanctum', 'extractUserId'])->get('/user', function (Request $request) {
+//     return response()->json([
+//         'userid' => $request->userid,
+//     ]);
+// });
 
 //Route::apiResource('user',AuthController::class);
-Route::get('signup', [AuthController::class, 'create'])->name('user.create');
-Route::post('signup', [AuthController::class, 'store'])->name('user.store');
+// Route::get('signup', [AuthController::class, 'create'])->name('user.create');
+// Route::post('signup', [AuthController::class, 'store'])->name('user.store');
 
-Route::get('login', [AuthController::class, 'createLogin'])->name('user.login');
-Route::post('login', [AuthController::class, 'login'])->name('login');
+// Route::get('login', [AuthController::class, 'createLogin'])->name('user.login');
+// Route::post('login', [AuthController::class, 'login'])->name('login');
 
-Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+// Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 // Route::middleware('auth:sanctum')->get('profile', [UserController::class, 'showProfile'])->name('profile');
 
@@ -33,13 +35,13 @@ Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanct
 // Route::middleware(['auth:sanctum', 'extractUserId'])->get('profile', [UserController::class, 'show'])->name('profile');
 // Route::get('profile', [UserController::class, 'show'])->name('profile');
 
-Route::get('/profile/{userid}', [UserController::class, 'showProfile'])->name('profile.show');
-Route::put('/profile/{userid}/change-password', [UserController::class, 'changePassword'])->name('profile.change-password');
-Route::put('/profile/{userid}/update', [UserController::class, 'updateProfile'])->name('profile.update');
+// Route::get('/profile/{userid}', [UserController::class, 'showProfile'])->name('profile.show');
+// Route::put('/profile/{userid}/change-password', [UserController::class, 'changePassword'])->name('profile.change-password');
+// Route::put('/profile/{userid}/update', [UserController::class, 'updateProfile'])->name('profile.update');
 
-Route::get('/reservations/{userid}', [ReservationController::class, 'index'])->name('booking-history');
+// Route::get('/reservations/{userid}', [ReservationController::class, 'index'])->name('booking-history');
 
-Route::post('refresh-token', [AuthController::class, 'refresh']);
+// Route::post('refresh-token', [AuthController::class, 'refresh']);
 
 
 // Route::middleware(['auth:sanctum', 'extractUserId'])->group(function () {

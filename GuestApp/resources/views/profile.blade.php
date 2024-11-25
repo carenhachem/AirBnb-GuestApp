@@ -25,9 +25,9 @@
           <div class="tab-content">
             <!-- General Tab -->
             <div class="tab-pane fade active show" id="account-general">
-              <form action="{{ route('profile.update', $user->userid) }}" method="POST" id="updateProfileForm" enctype="multipart/form-data">
+              {{-- <form action="{{ route('', $user->userid) }}" method="POST" id="updateProfileForm" enctype="multipart/form-data">
                 @csrf
-                @method('PUT') 
+                @method('PUT')  --}}
                 <div class="card-body media align-items-center">
                   <img src="{{ $user->profilepic ? asset('uploads/profiles/' . $user->profilepic) :'https://bootdey.com/img/Content/avatar/avatar1.png' }}" 
                        alt="" class="d-block ui-w-80">
@@ -58,13 +58,13 @@
                     <input type="text" class="form-control mb-1" value="{{ $user->email }}" disabled>
                   </div>
                 </div>
-              </form>
+              {{-- </form> --}}
             </div>
             <!-- Change Password Tab -->
             <div class="tab-pane fade" id="account-change-password">
-              <form action="{{ route('profile.change-password', $user->userid) }}" method="POST" id="changePasswordForm">
+              {{-- <form action="{{ route('', $user->userid) }}" method="POST" id="changePasswordForm">
                 @csrf
-                @method('PUT') 
+                @method('PUT')  --}}
                 <div class="card-body pb-2">
                   <div class="form-group">
                     <label class="form-label">Current Password</label>
@@ -79,7 +79,7 @@
                     <input type="password" class="form-control" name="new_password_confirmation">
                   </div>
                 </div>
-              </form>
+              {{-- </form> --}}
             </div>
           </div>
         </div>
@@ -89,9 +89,9 @@
     <!-- Save Changes Button -->
     <div class="text-right mt-3">
       <button id="saveChangesBtn" class="btn btn-primary">Save Changes</button>
-      <a href="{{ route('home') }}">
+      {{-- <a href="{{ route('') }}">
         <button type="button" class="btn btn-secondary">Cancel</button>
-      </a>
+      </a> --}}
     </div>
     <br>
 </div>
@@ -101,13 +101,13 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
+{{-- <script>
   // Handle Save Changes button click
   document.getElementById('saveChangesBtn').addEventListener('click', function() {
     const activeTab = document.querySelector('.tab-pane.active');
     const form = activeTab.querySelector('form');
     if (form) form.submit();
   });
-</script>
+</script> --}}
 </body>
 </html>
