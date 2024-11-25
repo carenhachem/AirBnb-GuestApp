@@ -5,15 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class amenity extends Model
-{    
-    use HasFactory;
+class Amenity extends Model
+{
+    protected $table = 'amenities';
+    protected $primaryKey = 'amenityid';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
-    function getAccomodations(){
-        return $this->belongsToMany(
-            accomodation::class,
-            'accomodationamenities',
-            'amenityid',
-            'accomodationid');
+    protected $fillable = [
+        'amenitydesc',
+        'isactive',
+    ];
+
+    public function accomodations()
+    {
+        return $this->belongsToMany(Accomodation::class, 'accomodationamenities', 'amenityid', 'accomodationid');
     }
 }

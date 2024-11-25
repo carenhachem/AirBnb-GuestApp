@@ -5,12 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class accomodationtype extends Model
+class AccomodationType extends Model
 {
-    use HasFactory;
+    protected $table = 'accomodationtypes';
+    protected $primaryKey = 'typeid';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
-    function getAccomodations(){
-        return $this->hasMany(accomodation::class,'typeid','typeid');
+    protected $fillable = [
+        'accomodationdesc',
+        'isactive',
+    ];
+
+    // Define the relationship with the Accomodation model
+    public function accomodations()
+    {
+        return $this->hasMany(Accomodation::class, 'typeid', 'typeid');
     }
-
 }
