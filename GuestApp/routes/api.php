@@ -12,7 +12,9 @@ use App\Models\User;
 // })->middleware('auth:sanctum');
 
 Route::get('/payment', [PaymentGatewayController::class, 'showPaymentPage'])->name('payment.show');
-Route::post('/payment/store',[PaymentGatewayController::class, 'store'])->name('payment.store');
+Route::get('/payment/receipt', [PaymentGatewayController::class, 'previewReceipt'])->name('payment.receipt');
+Route::post('/payment/receipt/confirm',[PaymentGatewayController::class, 'confirm'])->name('payment.receipt.confirm');
+Route::post('/payment/receipt/confirm-download',[PaymentGatewayController::class, 'confirmAndDownload'])->name('payment.receipt.confirm-download');
 
 Route::middleware(['auth:sanctum', 'extractUserId'])->get('/user', function (Request $request) {
     return response()->json([

@@ -6,8 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Transaction;
 use App\Models\Cardinfo;
 use Illuminate\Support\Str;
-
-
+use Illuminate\Support\Facades\Mail;
 
 class PaymentGatewayController extends Controller
 {
@@ -16,11 +15,11 @@ class PaymentGatewayController extends Controller
         return view('paymentForm'); 
     }
 
-    
-    public function store(Request $request)
+    public function previewReceipt(Request $request)
     {
         // $this->validate($request, [
         //     'userid' => 'required|uuid|exists:users,userid',
+        //     'email' => 'required|email|exists,users,email',
         //     'amount' => 'required|numeric|min:0',
         //     'address' => 'required',
         //     'city' => 'required',
@@ -33,14 +32,42 @@ class PaymentGatewayController extends Controller
         //     'cvv' => 'required|string|max:4',
         // ]);
 
-         // Get authenticated user from Auth if caren/joe implemented this way
-        //  $user = Auth::user();
+        $receiptData = [
+            'userid' => $request->userid,
+            'amount' => $request->amount,
+            'address' => $request->address,
+            'city' => $request->city,
+            'state' => $request->state,
+            'zipcode' => $request->zipcode,
+            'nameoncard' => $request->nameoncard,
+            'creditcardnumber' => $request->creditcardnumber,
+            'expyear' => $request->expyear,
+            'expmonth' => $request->expmonth,
+            'cvv' => $request->cvv,
+            'email' =>$request->email,
+        ];
 
-        // if (!$user) {
-        //     return response()->json(['error' => 'User not authenticated.'], 401);
-        // }
+        return view('receiptPreview', ['receiptData' => $receiptData]);
 
-         $cardInfo = null;
+    }
+
+    public function confirm(Request $request)
+    {
+        // the request is the receipt data
+        // $request->validate([
+        //     'userid' => 'required|uuid|exists:users,userid',
+        //     'email' => 'required|email|exists:users,email',
+        //     'amount' => 'required|numeric|min:0',
+        //     'address' => 'required|string',
+        //     'city' => 'required|string',
+        //     'zipcode' => 'required|string',
+        //     'state' => 'required|string',
+        //     'nameoncard' => 'required|string|max:255',
+        //     'creditcardnumber' => 'required|string|max:255',
+        //     'expyear' => 'required|integer',
+        //     'expmonth' => 'required|integer',
+        //     'cvv' => 'required|string|max:4',
+        // ]);
 
         $cardInfo = Cardinfo::create([
             'cardinfoid' => Str::uuid(),
@@ -50,19 +77,11 @@ class PaymentGatewayController extends Controller
             'expmonth' => $request->expmonth,
             'cvv' => $request->cvv,
         ]);
-
-        if (!$cardInfo) {
- 
-        return response()->json(['error' => 'Failed to save card information.'], 500);
-        }
-
-     $cardInfo->save();
+        $cardInfo->save();
 
         $transaction = Transaction::create([
             'transactionid' => (string) \Str::uuid(),
-            //for testing take it from the request
             'userid' => $request->userid,
-            //'userid' => $user->userid,// Use the authenticated user ID if Auth
             'address' => $request->address,
             'city' => $request->city,
             'state' => $request->state,
@@ -71,12 +90,70 @@ class PaymentGatewayController extends Controller
             'amount' => $request->amount,
             'paydate' => now(),
         ]);
+        $transaction->save();
+
+       Mail::send('emails.receipt', ['transaction' => $transaction], function ($message) use ($request) {
+            $message->to($request->email)
+                    ->subject('Payment Receipt');
+        });
 
         return response()->json([
-            'message' => 'Payment processed successfully.',
-            'transaction' => $transaction   
+            'message' => 'Payment confirmed successfully. A confirmation email has been sent.',
+            'transaction' => $transaction
         ]);
+    }
 
-        //return redirect()->route('createUser')->with('welcomeMessage', $welcomeMessage);
+    
+    public function confirmAndDownload(Request $request)
+    {
+        //the request is the receipt data
+
+        // $request->validate([
+        //     'userid' => 'required|uuid|exists:users,userid',
+        //     'email' => 'required|email|exists:users,email',
+        //     'amount' => 'required|numeric|min:0',
+        //     'address' => 'required|string',
+        //     'city' => 'required|string',
+        //     'zipcode' => 'required|string',
+        //     'state' => 'required|string',
+        //     'nameoncard' => 'required|string|max:255',
+        //     'creditcardnumber' => 'required|string|max:255',
+        //     'expyear' => 'required|integer',
+        //     'expmonth' => 'required|integer',
+        //     'cvv' => 'required|string|max:4',
+        // ]);
+
+        $cardInfo = Cardinfo::create([
+            'cardinfoid' => Str::uuid(),
+            'nameoncard' => $request->nameoncard,
+            'creditcardnumber' => $request->creditcardnumber,
+            'expyear' => $request->expyear,
+            'expmonth' => $request->expmonth,
+            'cvv' => $request->cvv,
+        ]);
+        $cardInfo->save();
+
+        $transaction = Transaction::create([
+            'transactionid' => (string) \Str::uuid(),
+            'userid' => $request->userid,
+            'address' => $request->address,
+            'city' => $request->city,
+            'state' => $request->state,
+            'zipcode' => $request->zipcode,
+            'infoid' => $cardInfo->cardinfoid,
+            'amount' => $request->amount,
+            'paydate' => now(),
+        ]);
+        $transaction->save();
+
+         Mail::send('emails.receipt', ['transaction' => $transaction], function ($message) use ($request) {
+            $message->to($request->email)
+                    ->subject('Payment Receipt');
+        });
+
+        $pdf = PDF::loadView('pdf.receipt', ['transaction' => $transaction]);
+
+        return $pdf->download('receipt-' . $transaction->transactionid . '.pdf');
+
     }
 }

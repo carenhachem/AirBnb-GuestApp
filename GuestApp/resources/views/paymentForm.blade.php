@@ -12,7 +12,7 @@
 
     <div class="container">
 
-       <form method="post" action="{{Route('payment.store')}}">    
+       <form method="get" action="{{Route('payment.receipt')}}">    
 
             <div class="row">
 
