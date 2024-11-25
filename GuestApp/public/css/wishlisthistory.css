@@ -1,0 +1,112 @@
+body {
+    font-family: "Inter", sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.breadcrumb {
+    font-size: 14px;
+    color: #666;
+    margin: 20px 0;
+}
+
+.wishlist-header {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.wishlist-header h1 {
+    font-family: "Playfair Display", serif;
+    font-size: 32px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.wishlist-header .icon {
+    font-size: 40px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th,
+td {
+    padding: 15px;
+    text-align: left;
+}
+
+th {
+    background-color: #f0f0f0;
+    color: #555;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+td {
+    font-size: 14px;
+    color: #444;
+    vertical-align: middle;
+}
+
+.product-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.product-name {
+    font-weight: 600;
+    font-size: 16px;
+    color: #222;
+}
+
+.price-old {
+    text-decoration: line-through;
+    color: #888;
+    margin-right: 10px;
+}
+
+.price-new {
+    color: #d9534f; /* Red for discounts */
+    font-weight: 600;
+}
+
+.stock-status {
+    color: #5cb85c; /* Green for 'In Stock' */
+    font-weight: 500;
+}
+
+.action-btn {
+    background-color: #007bff;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 15px;
+    border-radius: 20px;
+    text-decoration: none;
+    text-align: center;
+    display: inline-block;
+    transition: background-color 0.3s;
+}
+
+.action-btn:hover {
+    background-color: #0056b3;
+}
+
+.added-date {
+    font-size: 12px;
+    color: #888;
+}

@@ -203,26 +203,11 @@ class AuthController extends Controller
 
     // In AuthController.php
 
-    public function logout(Request $request)
+    public function logout()
     {
-        // Revoke the user's current access token
-        $request->user()->tokens->each(function ($token) {
-            $token->delete();
-        });
-
-        // Optionally, you can delete the refresh token from the database if you want
-        $refreshToken = RefreshToken::where('userid', $request->user()->userid)->first();
-        if ($refreshToken) {
-            $refreshToken->delete();
-        }
-
-        // Return a response indicating the user has logged out
-        return response()->json([
-            'message' => 'Logged out successfully',
-        ], 200);
+        Auth::logout();
+        return redirect('/login')->with('success', 'Logged out successfully.');
     }
-
-
 
     /**
      * Display the specified resource.

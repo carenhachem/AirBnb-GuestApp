@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -37,3 +38,7 @@ Route::put('/profile/change-password', [UserController::class, 'changePassword']
 Route::put('/profile/update', [UserController::class, 'updateProfile'])->middleware('auth')->name('profile.update');
 
 
+Route::get('/reservations', [ReservationController::class, 'index'])->middleware('auth')->name('booking-history');
+Route::get('/wishlist', [ReservationController::class, 'wishlist'])->middleware('auth')->name('wishlist-history');
+
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
