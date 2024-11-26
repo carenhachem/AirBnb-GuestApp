@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\AccomodationType;
-use App\Http\Controllers\AccomodationTypeController;
+// use App\Http\Controllers\AccomodationTypeController;
 
 class AccomodationTypeController extends Controller
 {
