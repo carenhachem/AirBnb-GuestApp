@@ -6,6 +6,9 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AccomodationController;
 use App\Http\Controllers\AccomodationTypeController;
+use App\Http\Controllers\PaymentGatewayController;
+
+
 Route::get('/', function () {
     return view('welcome');
 });

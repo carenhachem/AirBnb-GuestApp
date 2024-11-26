@@ -20,11 +20,7 @@ class User extends Authenticatable
     function getLoginMethod(){
         return $this->belongsTo(login::class,'loginmethodid','loginmethodid');
     }
-
-    function getPaymentMethod(){
-        return $this->belongsTo(payment::class,'paymentmethodid','paymentid');
-    }
-
+    
     public function getWishlists()
     {
         return $this->hasMany(wishlist::class, 'userid', 'userid');
@@ -44,6 +40,12 @@ class User extends Authenticatable
     {
         return $this->hasOne(usertoken::class, 'userid', 'userid');
     }
+
+    public function getTransactions()
+    {
+        return $this->hasMany(Transaction::class, 'userid', 'userid');
+    }
+
 
     public function refreshtoken()
     {

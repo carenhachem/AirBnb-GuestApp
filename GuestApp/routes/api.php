@@ -1,24 +1,27 @@
 <?php
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PaymentGatewayController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-
-
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
-//for testing middleware:
-// Route::middleware(['auth:sanctum', 'extractUserId'])->get('/user', function (Request $request) {
-//     return response()->json([
-//         'userid' => $request->userid,
-//     ]);
-// });
+Route::get('/payment', [PaymentGatewayController::class, 'showPaymentPage'])->name('payment.show');
+Route::get('/payment/receipt', [PaymentGatewayController::class, 'previewReceipt'])->name('payment.receipt');
+Route::post('/payment/receipt/confirm',[PaymentGatewayController::class, 'confirm'])->name('payment.receipt.confirm');
+Route::post('/payment/receipt/confirm-download',[PaymentGatewayController::class, 'confirmAndDownload'])->name('payment.receipt.confirm-download');
+
+Route::middleware(['auth:sanctum', 'extractUserId'])->get('/user', function (Request $request) {
+    return response()->json([
+        'userid' => $request->userid,
+    ]);
+});
 
 //Route::apiResource('user',AuthController::class);
 // Route::get('signup', [AuthController::class, 'create'])->name('user.create');
@@ -44,21 +47,4 @@ use Illuminate\Support\Facades\Route;
 // Route::post('refresh-token', [AuthController::class, 'refresh']);
 
 
-// Route::middleware(['auth:sanctum', 'extractUserId'])->group(function () {
-//     Route::get('testUserid', [UserController::class, 'testUserid']);
-// });
-// Route::get('login/google', [AuthController::class, 'redirectToGoogle'])->name('login.google');
-// Route::get('login/google/callback', [AuthController::class, 'handleGoogleCallback']);
 
-// Route::get('login/facebook', [AuthController::class, 'redirectToFacebook'])->name('login.facebook');
-// Route::get('login/facebook/callback', [AuthController::class, 'handleFacebookCallback']);
-
-
-// Route::middleware('auth:sanctum')->group(function () {
-// Route::apiResource('user', AuthController::class);
-
-// // Authenticated route to retrieve the current user
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// });
-// });
