@@ -6,12 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Accomodation extends Model
 {
-    use HasFactory;
-
     protected $table = 'accomodations';
-    protected $primaryKey = 'accomodationid'; 
-    public $incrementing = false;     
-    protected $keyType = 'uuid';  // or string from joe
+    protected $primaryKey = 'accomodationid';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
         'description',
@@ -24,49 +22,25 @@ class Accomodation extends Model
         'isactive',
     ];
 
-    function policies()
-    {
-        return $this->belongsToMany(
-            policy::class,
-            'accomodationpolicies',
-            'accomodationid',
-            'policyid');
-    }
-
-    public function location()
-    {
-        return $this->belongsTo(AccomodationLocation::class, 'locationid', 'locationid');
-    }
-
+    // Relationships
     public function type()
-    {
-        return $this->belongsTo(AccomodationType::class, 'typeid', 'typeid');
-    }
+{
+    return $this->belongsTo(AccomodationType::class, 'typeid', 'typeid');
+}
+
+
+public function location()
+{
+    return $this->belongsTo(AccomodationLocation::class, 'locationid', 'locationid');
+}
+
 
     public function amenities()
     {
         return $this->belongsToMany(Amenity::class, 'accomodationamenities', 'accomodationid', 'amenityid');
     }
 
-    public function wishlists()
-    {
-        return $this->belongsToMany(Amenity::class, 'accomodationamenities', 'accomodationid', 'amenityid');
-    }
-
-    public function reviews()
-    {
-        return $query->whereBetween('pricepernight', [$minPrice, $maxPrice]);
-    }
-
-    public function reservations()
-    {
-        return $query->whereHas('type', function ($q) use ($type) {
-            $q->where('accomodationdesc', $type);
-        });
-    }
-
-    //scopes
-
+    // Query Scopes
     public function scopePriceRange($query, $minPrice, $maxPrice)
     {
         return $query->whereBetween('pricepernight', [$minPrice, $maxPrice]);
@@ -85,4 +59,15 @@ class Accomodation extends Model
             $q->where('city', $location);
         });
     }
+
+    public function wishlists()
+    {
+        return $this->hasMany(wishlist::class, 'accomodationid', 'accomodationid');
+    }
+
+    public function reservations()
+    {
+        return $this->hasMany(reservation::class, 'accomodationid', 'accomodationid');
+    }
+
 }

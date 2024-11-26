@@ -38,8 +38,17 @@
       <tr>
         <!-- Product Image & Name -->
         <td >
-          <img src="{{ $booking->accomodation->image_url ?: 'https://via.placeholder.com/60' }}" alt="Product Image" class="product-image">
-          <span class="product-name" class="text-center">{{ $booking->accomodation->description ?: 'Product Name' }}</span>
+          {{-- <a href="{{ route('accomodations.show', ['id' => $booking->accomodationid]) }}"><img src="{{ $booking->accomodation->image ?: 'https://via.placeholder.com/60' }}" alt="Product Image" class="product-image"></a> --}}
+          <a href="{{ route('accomodations.show', ['id' => $booking->accomodationid]) }}">
+            @php
+              // Decode the image JSON field to get the URL of the image
+              $imageData = json_decode($booking->accomodation->image, true);
+              // Get the image URL (use placeholder if not set)
+              $imageUrl = $imageData['url'] ?? 'https://via.placeholder.com/60';
+            @endphp
+            <img src="{{ asset('images/' . $imageUrl) }}" alt="Accommodation Image" class="product-image">
+          </a>
+          <a href="{{ route('accomodations.show', ['id' => $booking->accomodationid]) }}"><span class="product-name" class="text-center">{{ $booking->accomodation->description ?: 'Product Name' }}</span></a>
         </td>
         
         <!-- Price/night -->
