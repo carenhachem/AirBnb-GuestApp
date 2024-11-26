@@ -1,38 +1,63 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class accomodation extends Model
+class Accomodation extends Model
 {
-    use HasFactory;
+    protected $table = 'accomodations';
+    protected $primaryKey = 'accomodationid';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
-    protected $primaryKey = 'accomodationid'; 
-    public $incrementing = false;     
-    protected $keyType = 'uuid';
+    protected $fillable = [
+        'description',
+        'pricepernight',
+        'typeid',
+        'locationid',
+        'guestcapacity',
+        'rating',
+        'image',
+        'isactive',
+    ];
 
-    function policies()
+    // Relationships
+    public function type()
+{
+    return $this->belongsTo(AccomodationType::class, 'typeid', 'typeid');
+}
+
+
+public function location()
+{
+    return $this->belongsTo(AccomodationLocation::class, 'locationid', 'locationid');
+}
+
+
+    public function amenities()
     {
-        return $this->belongsToMany(
-            policy::class,
-            'accomodationpolicies',
-            'accomodationid',
-            'policyid');
+        return $this->belongsToMany(Amenity::class, 'accomodationamenities', 'accomodationid', 'amenityid');
     }
 
-    function amenities()
+    // Query Scopes
+    public function scopePriceRange($query, $minPrice, $maxPrice)
     {
-        return $this->belongsToMany(
-            amenity::class,
-            'accomodationamenities',
-            'accomodationid',
-            'amenityid');
+        return $query->whereBetween('pricepernight', [$minPrice, $maxPrice]);
     }
 
-    function accomodationType(){
-        return $this->belongsTo(accomodationtype::class,'typeid','typeid');
+    public function scopeByType($query, $type)
+    {
+        return $query->whereHas('type', function ($q) use ($type) {
+            $q->where('accomodationdesc', $type);
+        });
+    }
+
+    public function scopeByLocation($query, $location)
+    {
+        return $query->whereHas('location', function ($q) use ($location) {
+            $q->where('city', $location);
+        });
     }
 
     public function wishlists()
@@ -40,19 +65,9 @@ class accomodation extends Model
         return $this->hasMany(wishlist::class, 'accomodationid', 'accomodationid');
     }
 
-    public function reviews()
-    {
-        return $this->hasMany(review::class, 'accomodationid', 'accomodationid');
-    }
-
     public function reservations()
     {
         return $this->hasMany(reservation::class, 'accomodationid', 'accomodationid');
-    }
-
-    public function location()
-    {
-        return $this->belongsTo(accomodationlocation::class, 'locationid', 'locationid');
     }
 
 }
