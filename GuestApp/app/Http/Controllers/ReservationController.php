@@ -14,7 +14,6 @@ class ReservationController extends Controller
 
         $bookings = reservation::with('accomodation')
         ->where('userid', $user->userid)
-        ->where('status', true)
         ->orderBy('created', 'desc')
         ->get();
 
@@ -27,7 +26,6 @@ class ReservationController extends Controller
 
         $bookings = reservation::with('accomodation')
         ->where('userid', $user->userid)
-        ->where('status', false)
         ->orderBy('created', 'desc')
         ->get();
 

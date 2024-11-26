@@ -33,7 +33,7 @@
                     <button class="details-btn">View Details</button>
                 </div>
             </div>
-        <?php endforeach; ?>
-    </div>
+        </div>
+    <?php endforeach; ?>
 </body>
 </html>

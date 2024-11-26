@@ -9,13 +9,17 @@ class wishlist extends Model
 {
     use HasFactory;
 
-    public function getUser()
+    protected $primaryKey = 'wishlistid';  // Set primary key to 'userid'
+    public $incrementing = false;     // UUIDs are not auto-incrementing
+    protected $keyType = 'uuid';
+
+    public function user()
     {
         return $this->belongsTo(User::class, 'userid', 'userid');
     }
 
     //each wishlist entry corresponds to exactly one accommodation
-    public function getAccomodation()
+    public function accomodation()
     {
         return $this->belongsTo(accomodation::class, 'accomodationid', 'accomodationid');
     }
