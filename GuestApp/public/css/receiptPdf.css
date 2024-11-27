@@ -1,0 +1,139 @@
+/* General styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.container {
+    width: 70%;
+    margin: 20px auto;
+    padding: 30px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    font-size: 14px;
+}
+
+h2 {
+    font-size: 28px;
+    text-align: center;
+    color: #4CAF50;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.receipt-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #4CAF50;
+    padding-bottom: 10px;
+}
+
+.receipt-header .receipt-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+/* Section styles */
+.section {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.section-title {
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.section-content p {
+    font-size: 14px;
+    margin: 5px 0;
+    color: #555;
+}
+
+.section-content p strong {
+    color: #333;
+}
+
+/* Payment Amount Section */
+.amount {
+    font-size: 18px;
+    font-weight: bold;
+    color: #4CAF50;
+    text-align: right;
+    margin-top: 15px;
+}
+
+/* Buttons container (optional in receipt but for any future buttons like download) */
+.buttons-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+button, .btn-group a {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+    transition: background-color 0.3s;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+button:hover, .btn-group a:hover {
+    background-color: #45a049;
+}
+
+/* Error or delete buttons (if applicable) */
+.mt-4 {
+    text-align: left;
+    margin-top: 20px;
+}
+
+.mt-4 button {
+    background-color: #f44336;
+    padding: 10px 20px;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+}
+
+.mt-4 button:hover {
+    background-color: #e53935;
+}
+
+/* Footer for the receipt */
+.receipt-footer {
+    border-top: 2px dashed #ddd;
+    margin-top: 20px;
+    padding-top: 10px;
+}
+
+.receipt-footer p {
+    font-size: 14px;
+    text-align: center;
+    color: #333;
+}

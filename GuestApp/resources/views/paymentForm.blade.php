@@ -26,7 +26,7 @@
 
                     <div class="inputBox">
                         <label for="email">Email:</label>
-                        <input type="text" id="email" placeholder="Enter email address" required>
+                        <input type="text" id="email" name="email" placeholder="Enter email address" required>
                     </div>
 
                     <div class="inputBox">

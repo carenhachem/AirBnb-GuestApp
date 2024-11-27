@@ -57,3 +57,7 @@ Route::get('/accommodations/filter-by-bounds', [AccomodationController::class, '
 Route::get('/types', [AccomodationTypeController::class, 'index'])->name('types.index');
 Route::get('/types/{id}', [AccomodationTypeController::class, 'show'])->name('types.show');
 
+Route::get('/payment', [PaymentGatewayController::class, 'showPaymentPage'])->middleware('auth')->name('payment.show');
+Route::get('/payment/receipt', [PaymentGatewayController::class, 'previewReceipt'])->name('payment.receipt');
+Route::post('/payment/receipt/confirm',[PaymentGatewayController::class, 'confirm'])->name('payment.receipt.confirm');
+Route::post('/payment/receipt/confirm-download',[PaymentGatewayController::class, 'confirmAndDownload'])->name('payment.receipt.confirm-download');
