@@ -17,7 +17,13 @@
             <div class="reservation-card">
                 <!-- Accommodation Image -->
                 <div class="accommodation-img-container">
-                    <img src="<?php echo $booking->accomodation->image_url ?: 'default-image.jpg'; ?>" alt="Accommodation Image" class="accommodation-img">
+                    @php
+                        // Decode the image JSON field to get the URL of the image
+                        $imageData = json_decode($booking->accomodation->image, true);
+                        // Get the image URL (use placeholder if not set)
+                        $imageUrl = $imageData['url'] ?? 'https://via.placeholder.com/60';
+                    @endphp
+                    <img src="{{ asset('images/' . $imageUrl) }}" alt="Accommodation Image" class="product-image">
                 </div>
 
                 <div class="reservation-info">
@@ -30,7 +36,7 @@
                     </div>
                 
                 <div class="reservation-actions">
-                    <button class="details-btn">View Details</button>
+                    <a href="{{ route('accomodations.show', ['id' => $booking->accomodationid]) }}" class="details-btn">View Details</a>
                 </div>
             </div>
         </div>
