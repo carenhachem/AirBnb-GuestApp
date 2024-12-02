@@ -30,7 +30,9 @@
             <form method="GET" action="{{ route('accomodations.index') }}" id="sortingForm" class="d-flex gap-2">
                 <!-- Hidden Inputs for Bounds -->
                 <input type="hidden" name="bounds" id="boundsInput" value="{{ request('bounds') }}">
-
+                <input type="hidden" name="checkin" id="checkinInput" value="{{ request('checkin') }}">
+                 <input type="hidden" name="checkout" id="checkoutInput" value="{{ request('checkout') }}">
+    
                 <!-- Sorting Dropdown -->
                 <select name="sort_by" class="form-select" onchange="document.getElementById('sortingForm').submit()">
                     <option value="">Sort By</option>
@@ -40,6 +42,7 @@
                     <option value="rating_desc" {{ request('sort_by') == 'rating_desc' ? 'selected' : '' }}>Rating: High to Low</option>
                 </select>
             </form>
+
 
             <!-- Filter Button -->
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#filterModal">
@@ -107,6 +110,15 @@
                 <div class="modal-body">
                     <!-- Filter Form -->
                     <form id="advancedFilterForm">
+                    <div class="mb-4">
+    <label for="checkin" class="form-label">Check-in Date</label>
+    <input type="date" id="checkin" name="checkin" class="form-control" value="{{ request('checkin') }}">
+</div>
+<div class="mb-4">
+    <label for="checkout" class="form-label">Check-out Date</label>
+    <input type="date" id="checkout" name="checkout" class="form-control" value="{{ request('checkout') }}">
+</div>
+
                         <div class="mb-4">
                             <label for="filterType" class="form-label">Type of Place</label>
                             <select id="filterType" class="form-select">
@@ -433,6 +445,11 @@
 
             // Apply filters when "Apply Filters" button is clicked
             $('#applyFilters').click(() => {
+                const checkin = $('#checkin').val();
+    const checkout = $('#checkout').val();
+
+    $('#checkinInput').val(checkin);
+    $('#checkoutInput').val(checkout);
                 filterAccommodations();
                 $('#filterModal').modal('hide');
             });
@@ -467,6 +484,10 @@
                 slider.noUiSlider.set([50, 500]);
                 $('.filter-amenity').prop('checked', false);
                 $('#guestCapacity').val('');
+                $('#checkin').val('');
+    $('#checkout').val('');
+    $('#checkinInput').val('');
+    $('#checkoutInput').val('');
                 $('#rating').val('');
                 filterAccommodations();
             });

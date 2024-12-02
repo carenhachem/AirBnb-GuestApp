@@ -9,9 +9,21 @@ class reservation extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'reservationid';  
-    public $incrementing = false;     
+    protected $primaryKey = 'reservationid';
+    public $incrementing = false;
     protected $keyType = 'uuid';
+
+    protected $fillable = [
+        'reservationid',
+        'userid',
+        'accomodationid',
+        'checkin',
+        'checkout',
+        'totalprice',
+        'isreserved',
+    ];
+
+    protected $dates = ['checkin', 'checkout'];
 
     public function user()
     {
@@ -20,6 +32,6 @@ class reservation extends Model
 
     public function accomodation()
     {
-        return $this->belongsTo(accomodation::class, 'accomodationid', 'accomodationid');
+        return $this->belongsTo(Accomodation::class, 'accomodationid', 'accomodationid');
     }
 }

@@ -24,9 +24,10 @@
             background-color: #007bff;
             color: #fff;
         }
-        .litepicker .day-item.disabled {
+        .litepicker .day-item.is-disabled {
             color: #ccc;
             cursor: not-allowed;
+            background-color: #f8f9fa;
         }
     </style>
 @endpush
@@ -55,13 +56,24 @@
             <div class="col-md-4">
                 <div class="card shadow-sm p-3">
                     <h4 class="card-title">Reserve Your Stay</h4>
-                    <form id="reservationForm">
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            {{ $errors->first() }}
+                        </div>
+                    @endif
+                    <form id="reservationForm" action="{{ route('reservations.store', $accomodation->accomodationid) }}" method="POST">
+                        @csrf
                         <div class="mb-3">
                             <label for="reservationDates" class="form-label">Select Dates</label>
-                            <input type="text" id="reservationDates" class="form-control" placeholder="Check-in - Check-out" readonly>
+                            <input type="text" id="reservationDates" class="form-control" placeholder="Check-in - Check-out" readonly required>
+                            <input type="hidden" name="checkin" id="checkin">
+                            <input type="hidden" name="checkout" id="checkout">
+                        </div>
+                        <div class="mb-3">
+                            <p><strong>Total Price:</strong> <span id="totalPrice">$0</span></p>
                         </div>
                         <div class="d-grid">
-                            <button type="button" class="btn btn-primary">Book Now</button>
+                            <button type="submit" class="btn btn-primary">Book Now</button>
                         </div>
                     </form>
                 </div>
@@ -78,6 +90,8 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            const unavailableDates = @json($unavailableDates);
+
             const picker = new Litepicker({
                 element: document.getElementById('reservationDates'),
                 singleMode: false,
@@ -86,6 +100,10 @@
                 format: 'YYYY-MM-DD',
                 minDate: new Date(),
                 autoApply: true,
+                lockDays: unavailableDates,
+                lockDaysFilter: (date) => {
+                    return unavailableDates.includes(date.format('YYYY-MM-DD'));
+                },
                 tooltipText: {
                     one: 'night',
                     other: 'nights'
@@ -95,7 +113,17 @@
                 },
                 setup: (picker) => {
                     picker.on('selected', (date1, date2) => {
-                       
+                        if (date1 && date2) {
+                            document.getElementById('checkin').value = date1.format('YYYY-MM-DD');
+                            document.getElementById('checkout').value = date2.format('YYYY-MM-DD');
+
+                            // Calculate total price
+                            const oneDay = 24 * 60 * 60 * 1000;
+                            const diffDays = Math.round(Math.abs((date2.dateInstance - date1.dateInstance) / oneDay));
+
+                            const totalPrice = diffDays * {{ $accomodation->pricepernight }};
+                            document.getElementById('totalPrice').innerText = '$' + totalPrice;
+                        }
                     });
                 }
             });

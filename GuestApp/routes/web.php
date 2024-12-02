@@ -50,6 +50,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 //Accomodations
 Route::get('/accommodations', [AccomodationController::class, 'index'])->name('accomodations.index');
 Route::get('/accommodations/{id}', [AccomodationController::class, 'show'])->name('accomodations.show');
+Route::post('/accomodations/{id}/reserve', [ReservationController::class, 'store'])->name('reservations.store');
 Route::post('/filter-accommodations', [AccomodationController::class, 'filterByBounds']);
 Route::get('/accommodations/filter-by-bounds', [AccomodationController::class, 'filterByBounds']);
 
