@@ -11,6 +11,8 @@ class Accomodation extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
+    const UPDATED_AT = 'updated'; //updated instead of updated_at
+
     protected $fillable = [
         'description',
         'pricepernight',
@@ -20,6 +22,7 @@ class Accomodation extends Model
         'rating',
         'image',
         'isactive',
+        'updated'
     ];
 
     // Relationships

@@ -31,6 +31,13 @@ class ReviewController extends Controller
             'userid' => $user->userid,
         ]);
 
+        $averageRating = review::where('accomodationid', $id)
+        ->avg('rating');
+
+        $accomodation = accomodation::findOrFail($id);
+        $accomodation->rating = round($averageRating, 1); 
+        $accomodation->save();
+
         return redirect()->back()->with('success', 'Review added successfully.');
     }
 }
