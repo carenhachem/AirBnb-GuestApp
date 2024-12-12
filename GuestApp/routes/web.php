@@ -28,8 +28,8 @@ Route::get('/home', function () {
 Route::get('auth/google', [AuthController::class, 'redirectToGoogle'])->name('google-auth');
 Route::get('auth/google/call-back', [AuthController::class, 'callbackGoogle']);
 
-Route::get('login/facebook', [AuthController::class, 'redirectToFacebook'])->name('login.facebook');
-Route::get('login/facebook/callback', [AuthController::class, 'handleFacebookCallback']);
+// Route::get('login/facebook', [AuthController::class, 'redirectToFacebook'])->name('login.facebook');
+// Route::get('login/facebook/callback', [AuthController::class, 'handleFacebookCallback']);
 
 Route::get('/login', [AuthController::class, 'createLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
@@ -45,7 +45,7 @@ Route::put('/profile/update', [UserController::class, 'updateProfile'])->middlew
 Route::get('/reservations', [ReservationController::class, 'index'])->middleware('auth')->name('booking-history');
 Route::get('/wishlist', [ReservationController::class, 'wishlist'])->middleware('auth')->name('wishlist-history');
 
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 //Accomodations
 Route::get('/accommodations', [AccomodationController::class, 'index'])->name('accomodations.index');

@@ -107,6 +107,7 @@ class AuthController extends Controller
     public function redirectToGoogle()
     {
         return Socialite::driver('google')->redirect();
+        
     }
 
     // Handle Google Callback
@@ -141,42 +142,6 @@ class AuthController extends Controller
         }        
     }
 
-    // Redirect to Facebook
-    public function redirectToFacebook()
-    {
-        return Socialite::driver('facebook')->redirect();
-    }
-
-    // Handle Facebook Callback
-    public function handleFacebookCallback()
-    {
-        $facebookUser = Socialite::driver('facebook')->user();
-
-        // Check if user exists
-        $user = User::where('email', $facebookUser->getEmail())->first();
-
-        if (!$user) {
-            // Register new user if not exists
-            $user = User::create([
-                'first_name' => $facebookUser->getName(),
-                'email' => $facebookUser->getEmail(),
-                'password' => bcrypt(Str::random(16)), // Random password
-            ]);
-        }
-
-        // Log the user in
-        Auth::login($user);
-
-        // Generate API token
-        $token = $user->createToken('API Token')->plainTextToken;
-
-        // Return response with token
-        return response()->json([
-            'message' => 'Logged in successfully',
-            'token' => $token,
-        ]);
-    }
-
     public function refresh(Request $request)
     {
         // Validate incoming refresh token
@@ -206,7 +171,7 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::logout();
-        return redirect('/login')->with('success', 'Logged out successfully.');
+        return redirect('/accommodations')->with('success', 'Logged out successfully.');
     }
 
     /**
