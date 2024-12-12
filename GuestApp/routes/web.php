@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AccomodationController;
 use App\Http\Controllers\AccomodationTypeController;
 use App\Http\Controllers\PaymentGatewayController;
-
+use App\Http\Controllers\ReviewController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -62,3 +62,7 @@ Route::get('/payment', [PaymentGatewayController::class, 'showPaymentPage'])->mi
 Route::get('/payment/receipt', [PaymentGatewayController::class, 'previewReceipt'])->name('payment.receipt');
 Route::post('/payment/receipt/confirm',[PaymentGatewayController::class, 'confirm'])->name('payment.receipt.confirm');
 Route::post('/payment/receipt/confirm-download',[PaymentGatewayController::class, 'confirmAndDownload'])->name('payment.receipt.confirm-download');
+
+//Reviews
+Route::get('/accommodations/{id}/reviews', [ReviewController::class, 'index'])->name('review.index');
+Route::post('/accommodations/{id}/add-review',[ReviewController::class, 'store'])->name('reviews.store');

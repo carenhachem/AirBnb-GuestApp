@@ -70,4 +70,9 @@ public function location()
         return $this->hasMany(reservation::class, 'accomodationid', 'accomodationid');
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(review::class, 'accomodationid', 'accomodationid');
+    }
+
 }

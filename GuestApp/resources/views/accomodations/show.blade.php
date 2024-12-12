@@ -29,11 +29,20 @@
             cursor: not-allowed;
             background-color: #f8f9fa;
         }
+        .review-rating {
+            display: inline-block;
+            float: right;
+            text-align: right;
+        }
     </style>
 @endpush
 
 @section('content')
     <div class="container">
+        <div class="mt-4">
+            <a href="{{ route('accomodations.index') }}" class="btn btn-outline-secondary">Back to List</a>
+        </div>
+
         <h1 class="mt-4">{{ $accomodation->description }}</h1>
         <div class="row mt-4">
             <div class="col-md-8">
@@ -79,8 +88,62 @@
                 </div>
             </div>
         </div>
+
+        <!-- Reviews Section -->
         <div class="mt-4">
-            <a href="{{ route('accomodations.index') }}" class="btn btn-outline-secondary">Back to List</a>
+            <h4>Reviews</h4>
+            @if ($accomodation->reviews && $accomodation->reviews->isNotEmpty())
+                @foreach ($accomodation->reviews as $review)
+                    <div class="card mb-3 shadow-sm">
+                        <div class="card-body">
+                            <strong>{{ $review->user->username }}</strong>
+                            <span class="review-rating float-end">
+                                @for ($i = 0; $i < floor($review->rating); $i++)
+                                    <i class="fa fa-star text-warning"></i>
+                                @endfor
+                                @if ($review->rating - floor($review->rating) > 0)
+                                    <i class="fa fa-star-half-alt text-warning"></i>
+                                @endif
+                                @for ($i = ceil($review->rating); $i < 5; $i++)
+                                    <i class="fa fa-star text-muted"></i>
+                                @endfor
+                            </span>                    
+                            <p class="mt-2">{{ $review->review }}</p>
+                            <small class="text-muted"> Reviewed on {{ $review->created_at->format('M d, Y') }}</small>
+                        </div>
+                    </div>
+                @endforeach
+            @else
+                <p>No reviews yet. Be the first to leave one!</p>
+            @endif
+        </div>
+
+        <div class="card shadow-sm p-3 mt-4">
+            <h4 class="card-title">Add a Review</h4>
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    {{ $errors->first() }}
+                </div>
+            @endif
+            <form action="{{ route('reviews.store', $accomodation->accomodationid) }}" method="POST">
+                @csrf
+                <div class="mb-3">
+                    <label for="rating" class="form-label">Rating</label>
+                    <select id="rating" name="rating" class="form-select" required>
+                        <option value="" disabled selected>Select Rating</option>
+                        @for ($i = 1; $i <= 5; $i++)
+                            <option value="{{ $i }}">{{ $i }} stars</option>
+                        @endfor
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="comment" class="form-label">Comment</label>
+                    <textarea id="comment" name="review" class="form-control" rows="3" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary submit-review-btn" style="background-color: #ccc; width: 150px; margin: 0 auto; display: block;">Submit Review</button>
+                </div>
+            </form>
         </div>
     </div>
 @endsection
