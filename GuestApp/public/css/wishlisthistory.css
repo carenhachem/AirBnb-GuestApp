@@ -110,3 +110,27 @@ td {
     font-size: 12px;
     color: #888;
 }
+
+/* Custom Style for Trash Button */
+.form-inline {
+    display: inline-flex;
+    align-items: center;
+}
+
+.form-inline .btn {
+    background: none;
+    border: none;
+    color: #333;
+    padding: 0;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.form-inline .btn:hover {
+    color: #e74c3c; /* Change color on hover */
+}
+
+.action-btn {
+    margin-right: 10px;
+}

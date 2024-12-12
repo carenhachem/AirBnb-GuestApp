@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\reservation;
 use App\Models\Accomodation;
+use App\Models\wishlist;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ReservationController extends Controller
 {
+    //reservation history
     public function index(Request $request)
     {
         $user = Auth::user();
@@ -43,12 +45,21 @@ class ReservationController extends Controller
     {
         $user = Auth::user();
 
-        $bookings = reservation::with('accomodation')
+        $bookings = wishlist::with('accomodation')
         ->where('userid', $user->userid)
         ->orderBy('created', 'desc')
         ->get();
 
         return view('wishlisthistory',compact('bookings'));
+    }
+
+    public function destroy($id)
+    {
+        $user = Auth::user(); 
+
+        $wishlist = wishlist::where('userid', $user->userid)->findOrFail($id);
+        $wishlist->delete(); 
+        return redirect()->back()->with('success', 'Wishlist item removed successfully.');
     }
 
     public function show(Accomodation $accomodation)

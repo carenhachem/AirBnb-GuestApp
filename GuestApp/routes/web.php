@@ -44,6 +44,7 @@ Route::put('/profile/update', [UserController::class, 'updateProfile'])->middlew
 
 Route::get('/reservations', [ReservationController::class, 'index'])->middleware('auth')->name('booking-history');
 Route::get('/wishlist', [ReservationController::class, 'wishlist'])->middleware('auth')->name('wishlist-history');
+Route::delete('/wishlist/{id}', [ReservationController::class, 'destroy'])->middleware('auth')->name('wishlist.destroy');
 
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
