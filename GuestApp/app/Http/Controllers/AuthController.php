@@ -33,42 +33,44 @@ class AuthController extends Controller
  
 
     public function login(Request $request)
-    {
-        // Validate input
-        $request->validate([
-            'username_or_email' => 'required',
-            'password' => 'required',
-        ]);
-    
-        $credentials = [
-            'password' => $request->password,
-        ];
-    
-        // Determine if the input is an email or username
-        if (filter_var($request->username_or_email, FILTER_VALIDATE_EMAIL)) {
-            // It's an email
-            $credentials['email'] = $request->username_or_email;
-        } else {
-            // It's a username
-            $credentials['username'] = $request->username_or_email;
-        }
-    
-        // Attempt to log the user in
-        if (Auth::attempt($credentials)) {
-            // Retrieve authenticated user's ID
-            $user = Auth::user();
+{
+    // Validate input
+    $request->validate([
+        'username_or_email' => 'required',
+        'password' => 'required',
+    ]);
 
-            Log::info('User successfully logged in', [
-                'userid' => $user->userid,
-                'firstname' => $user->first_name,
-                'email' => $user->email,
-            ]);
-            
-            return redirect()->route('profile')->with('success', "Logged in! User ID: {$user->userid}");
-        }
+    $credentials = [
+        'password' => $request->password,
+    ];
 
-        return back()->withErrors(['error' => 'Wrong credentials.'])->withInput();
+    // Determine if the input is an email or username
+    if (filter_var($request->username_or_email, FILTER_VALIDATE_EMAIL)) {
+        // It's an email
+        $credentials['email'] = $request->username_or_email;
+    } else {
+        // It's a username
+        $credentials['username'] = $request->username_or_email;
     }
+
+    // Attempt to log the user in
+    if (Auth::attempt($credentials)) {
+        // Retrieve authenticated user's ID
+        $user = Auth::user();
+
+        Log::info('User successfully logged in', [
+            'userid' => $user->userid,
+            'firstname' => $user->first_name,
+            'email' => $user->email,
+        ]);
+        
+        // Redirect to the intended URL or the default profile page
+        return redirect()->intended(route('profile'))->with('success', "Logged in! User ID: {$user->userid}");
+    }
+
+    return back()->withErrors(['error' => 'Wrong credentials.'])->withInput();
+}
+
 
     /**
      * Store a newly created resource in storage.
@@ -100,7 +102,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('profile')->with('success', "Signed up! User ID: {$user->userid}");
+        return redirect()->intended(route('profile'))->with('success', "Logged in! User ID: {$user->userid}");
     }
 
     // Redirect to Google
@@ -165,8 +167,6 @@ class AuthController extends Controller
         // Return response with new token
         return response()->json(['token' => $newToken]);
     }
-
-    // In AuthController.php
 
     public function logout()
     {

@@ -127,19 +127,26 @@
             @endif
             <form action="{{ route('reviews.store', $accomodation->accomodationid) }}" method="POST">
                 @csrf
+                {{-- <input type="hidden" name="intended_url" value="{{ url()->current() }}"> --}}
                 <div class="mb-3">
                     <label for="rating" class="form-label">Rating</label>
                     <select id="rating" name="rating" class="form-select" required>
                         <option value="" disabled selected>Select Rating</option>
                         @for ($i = 1; $i <= 5; $i++)
-                            <option value="{{ $i }}">{{ $i }} stars</option>
+                            <option value="{{ $i }}" 
+                                {{ (old('rating', session('review_data.rating')) == $i) ? 'selected' : '' }}>
+                                {{ $i }} stars
+                            </option>
                         @endfor
                     </select>
                 </div>
+                
                 <div class="mb-3">
                     <label for="comment" class="form-label">Comment</label>
-                    <textarea id="comment" name="review" class="form-control" rows="3" required></textarea>
-                </div>
+                    <textarea id="comment" name="review" class="form-control" rows="3" required>
+                        {{ old('review', session('review_data.review')) }}
+                    </textarea>
+                </div>                
                 <div class="mb-3">
                     <button type="submit" class="btn btn-primary submit-review-btn" style="background-color: #ccc; width: 150px; margin: 0 auto; display: block;">Submit Review</button>
                 </div>

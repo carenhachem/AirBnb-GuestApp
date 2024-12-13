@@ -19,6 +19,14 @@ class ReviewController extends Controller
     {
         $user = Auth::user();
 
+        if (!$user) {
+            session([
+                'review_data' => $request->only('rating', 'review')
+            ]);
+    
+            return redirect()->route('login');  
+        }
+
         $request->validate([
             'rating' => 'required',
             'review' => 'required|string|max:255',
@@ -37,6 +45,8 @@ class ReviewController extends Controller
         $accomodation = accomodation::findOrFail($id);
         $accomodation->rating = round($averageRating, 1); 
         $accomodation->save();
+
+        session()->forget('review_data');
 
         return redirect()->back()->with('success', 'Review added successfully.');
     }

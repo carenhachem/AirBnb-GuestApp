@@ -66,4 +66,4 @@ Route::post('/payment/receipt/confirm-download',[PaymentGatewayController::class
 
 //Reviews
 Route::get('/accommodations/{id}/reviews', [ReviewController::class, 'index'])->name('review.index');
-Route::post('/accommodations/{id}/add-review',[ReviewController::class, 'store'])->name('reviews.store');
+Route::post('/accommodations/{id}/add-review',[ReviewController::class, 'store'])->name('reviews.store')->middleware('auth');
