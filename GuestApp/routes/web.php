@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AccomodationController;
 use App\Http\Controllers\AccomodationTypeController;
 use App\Http\Controllers\PaymentGatewayController;
-
+use App\Http\Controllers\ReviewController;
 
 //Route::get('/', function () {
 //    return view('welcome');
@@ -24,8 +24,8 @@ use App\Http\Controllers\PaymentGatewayController;
 Route::get('auth/google', [AuthController::class, 'redirectToGoogle'])->name('google-auth');
 Route::get('auth/google/call-back', [AuthController::class, 'callbackGoogle']);
 
-Route::get('login/facebook', [AuthController::class, 'redirectToFacebook'])->name('login.facebook');
-Route::get('login/facebook/callback', [AuthController::class, 'handleFacebookCallback']);
+// Route::get('login/facebook', [AuthController::class, 'redirectToFacebook'])->name('login.facebook');
+// Route::get('login/facebook/callback', [AuthController::class, 'handleFacebookCallback']);
 
 Route::get('/login', [AuthController::class, 'createLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
@@ -40,10 +40,11 @@ Route::put('/profile/update', [UserController::class, 'updateProfile'])->middlew
 
 Route::get('/reservations', [ReservationController::class, 'index'])->middleware('auth')->name('booking-history');
 Route::get('/wishlist', [ReservationController::class, 'wishlist'])->middleware('auth')->name('wishlist-history');
-Route::post('/store-wishlist', [WishlistController::class, 'store'])->middleware('auth');
-Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+Route::post('/wishlist/toggle', [AccomodationController::class, 'toggleWishlist'])->name('wishlist.toggle');
+Route::delete('/wishlist/{id}', [ReservationController::class, 'destroy'])->middleware('auth')->name('wishlist.destroy');
 
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 //Accomodations
 Route::get('/', [AccomodationController::class, 'index'])->name('accomodations.index');
@@ -60,3 +61,7 @@ Route::get('/payment', [PaymentGatewayController::class, 'showPaymentPage'])->mi
 Route::get('/payment/receipt', [PaymentGatewayController::class, 'previewReceipt'])->name('payment.receipt');
 Route::post('/payment/receipt/confirm',[PaymentGatewayController::class, 'confirm'])->name('payment.receipt.confirm');
 Route::post('/payment/receipt/confirm-download',[PaymentGatewayController::class, 'confirmAndDownload'])->name('payment.receipt.confirm-download');
+
+//Reviews
+Route::get('/accommodations/{id}/reviews', [ReviewController::class, 'index'])->name('review.index');
+Route::post('/accommodations/{id}/add-review',[ReviewController::class, 'store'])->name('reviews.store');

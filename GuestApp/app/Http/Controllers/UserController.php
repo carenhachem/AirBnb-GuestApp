@@ -84,7 +84,7 @@ class UserController extends Controller
     public function updateProfile(Request $request)
     {
         $request->validate([
-            'profilepic' => 'file',
+            'profilepic' => 'file|image|mimes:jpeg,png,jpg||max:2048',
             'first_name' => 'required|string|max:50',
             'last_name' => 'required|string|max:50',
         ], [
@@ -109,8 +109,8 @@ class UserController extends Controller
         if ($request->hasFile('profilepic')) {
             $file = $request->file('profilepic');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('uploads/profiles'), $filename); // Save file in 'uploads/thumbnails'
-            $user->profilepic = $filename; // Update thumbnail
+            $file->move(public_path('uploads/profiles'), $filename); 
+            $user->profilepic = $filename; 
         }
 
         DB::table('users')->where('userid', $user->userid)->update($data);

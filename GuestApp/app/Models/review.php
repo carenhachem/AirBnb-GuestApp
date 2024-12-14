@@ -9,11 +9,22 @@ class review extends Model
 {
     use HasFactory;
 
-    function getAccomodation(){
+    protected $primaryKey = 'reviewid';  
+    public $incrementing = false;     
+    protected $keyType = 'uuid';
+
+    protected $fillable = [
+        "userid",
+        'accomodationid',
+        'rating',
+        'review'
+    ];
+
+    function accomodation(){
         return $this->belongsTo(accomodation::class,'accomodationid','accomodationid');
     }
 
-    public function getUser()
+    public function user()
     {
         return $this->belongsTo(User::class, 'userid', 'userid');
     }

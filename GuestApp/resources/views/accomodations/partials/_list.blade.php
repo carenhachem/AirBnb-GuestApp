@@ -22,8 +22,11 @@
                         <i class="bi bi-heart text-danger fs-4"></i>
                     @endif
                 </button>
-                
-                <img src="{{ $accomodation->image ? json_decode($accomodation->image)->url : 'default.jpg' }}"
+                @php
+                $imageData = json_decode($accomodation->image, true);
+                $imageUrl = $imageData['url'] ?? 'https://via.placeholder.com/60';
+              @endphp
+                <img src="{{ asset('images/' . $imageUrl) }}"
                      class="card-img-top" 
                      alt="{{ $accomodation->description }}" 
                      style="height: 200px; object-fit: cover;">

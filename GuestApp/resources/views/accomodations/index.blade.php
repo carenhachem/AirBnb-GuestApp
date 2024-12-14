@@ -1,17 +1,46 @@
 @extends('layouts.app')
 
 @section('content')
-    <!-- Loader -->
-    <div id="loader" style="display: none;">
-        <div class="loader-spinner"></div>
-    </div>
-
     <!-- Header -->
     <div class="container-fluid bg-light py-5 mb-5">
         <div class="container text-center">
             <h1 class="display-4 fw-bold">Find Your Perfect Stay</h1>
             <p class="lead">Discover amazing accommodations across Lebanon</p>
         </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="container mb-4">
+        <form method="GET" action="{{ route('accomodations.index') }}" class="row g-2" id="searchForm">
+            <!-- Preserve existing filters as hidden fields -->
+            <input type="hidden" name="bounds" id="boundsInput" value="{{ request('bounds') }}">
+            <input type="hidden" name="checkin" value="{{ request('checkin') }}">
+            <input type="hidden" name="checkout" value="{{ request('checkout') }}">
+            <input type="hidden" name="min_price" value="{{ request('min_price') }}">
+            <input type="hidden" name="max_price" value="{{ request('max_price') }}">
+            <input type="hidden" name="type" value="{{ request('type') }}">
+            <input type="hidden" name="guestCapacity" value="{{ request('guestCapacity') }}">
+            <input type="hidden" name="rating" value="{{ request('rating') }}">
+
+            @if(is_array(request('amenities')))
+                @foreach(request('amenities') as $amenity)
+                    <input type="hidden" name="amenities[]" value="{{ $amenity }}">
+                @endforeach
+            @endif
+
+            <div class="col-md-4">
+                <input type="text" name="keyword" class="form-control" placeholder="Search by keyword..." value="{{ request('keyword') }}">
+            </div>
+            <div class="col-md-4">
+                <input type="text" name="city" class="form-control" placeholder="Search by city..." value="{{ request('city') }}">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Search</button>
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-outline-secondary w-100" id="clearMainSearch">Clear</button>
+            </div>
+        </form>
     </div>
 
     <!-- Types Section -->
@@ -41,6 +70,8 @@
                 <input type="hidden" name="type" id="typeInput" value="{{ request('type') }}">
                 <input type="hidden" name="guestCapacity" id="guestCapacityInput" value="{{ request('guestCapacity') }}">
                 <input type="hidden" name="rating" id="ratingInput" value="{{ request('rating') }}">
+                <input type="hidden" name="keyword" id="keywordInput" value="{{ request('keyword') }}">
+                <input type="hidden" name="city" id="cityInput" value="{{ request('city') }}">
 
                 @php
                     $currentAmenities = request('amenities', []);
@@ -75,7 +106,12 @@
     <div class="container-fluid">
         <div class="row">
             <!-- Accommodation Cards Container -->
-            <div class="col-lg-8 mb-5" id="listing-container">
+            <div class="col-lg-8 mb-5" id="listing-container" style="position: relative;">
+                <!-- Loader specifically for listing -->
+                <div id="listing-loader" style="display:none; position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(255,255,255,0.7); z-index:999; display:flex; align-items:center; justify-content:center;">
+                    <div class="loader-spinner"></div>
+                </div>
+
                 @include('accomodations.partials._list', ['accomodations' => $accomodations, 'wishlistItems' => $wishlistItems])
             </div>
 
@@ -97,6 +133,15 @@
                 <div class="modal-body">
                     <!-- Filter Form -->
                     <form id="advancedFilterForm">
+                        <div class="mb-4">
+                            <label for="keyword" class="form-label">Keyword</label>
+                            <input type="text" id="keyword" name="keyword" class="form-control" placeholder="e.g. Beirut, Cozy, Apartment" value="{{ request('keyword') }}">
+                        </div>
+                        <div class="mb-4">
+                            <label for="city" class="form-label">City</label>
+                            <input type="text" id="city" name="city" class="form-control" placeholder="e.g. Beirut" value="{{ request('city') }}">
+                        </div>
+
                         <div class="mb-4">
                             <label for="checkin" class="form-label">Check-in Date</label>
                             <input type="date" id="checkin" name="checkin" class="form-control" value="{{ request('checkin') }}">
@@ -166,17 +211,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.0/nouislider.min.css">
 
     <style>
-        /* Loader Styles */
-        #loader {
-            position: fixed;
-            z-index: 9999;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
         .loader-spinner {
             border: 10px solid #f3f3f3;
             border-radius: 50%;
@@ -237,7 +271,7 @@
 
         $(document).ready(function() {
             // Mapbox Access Token
-            mapboxgl.accessToken = 'YOUR_MAPBOX_ACCESS_TOKEN'; // Replace with your token
+            mapboxgl.accessToken = 'pk.eyJ1Ijoiam9lLWhhZGNoaXR5IiwiYSI6ImNtM2tnMnlkNTBnZHAybHFvaWc1azlndGkifQ.AVgrQqh2ce6MvMzUv4r6yQ';
 
             map = new mapboxgl.Map({
                 container: 'map',
@@ -250,11 +284,13 @@
 
             const filterForm = document.getElementById('filterForm');
 
-            $(document).ajaxStart(function() {
-                $('#loader').show();
-            }).ajaxStop(function() {
-                $('#loader').hide();
-            });
+            function showListingLoader() {
+                $('#listing-loader').show();
+            }
+
+            function hideListingLoader() {
+                $('#listing-loader').hide();
+            }
 
             function rebuildMapData() {
                 const features = [];
@@ -402,14 +438,26 @@
             });
 
             function loadListings(url) {
+                showListingLoader();
                 $.ajax({
                     url: url,
                     type: 'GET',
                     data: $(filterForm).serialize(),
                     success: function(data) {
                         $('#listing-container').html(data);
+
+                        // Re-inject the loader after updating the content
+                        $('#listing-container').css('position', 'relative').append(`
+                            <div id="listing-loader" style="display:none; position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(255,255,255,0.7); z-index:999; display:flex; align-items:center; justify-content:center;">
+                                <div class="loader-spinner"></div>
+                            </div>
+                        `);
+
                         attachPaginationLinks();
                         rebuildMapData();
+                    },
+                    complete: function() {
+                        hideListingLoader();
                     }
                 });
             }
@@ -453,6 +501,8 @@
                 }).get();
                 const guestCapacity = $('#guestCapacity').val();
                 const rating = $('#rating').val();
+                const keyword = $('#keyword').val();
+                const city = $('#city').val();
 
                 $('#checkinInput').val(checkin);
                 $('#checkoutInput').val(checkout);
@@ -461,6 +511,8 @@
                 $('#maxPriceInput').val(priceValues[1]);
                 $('#guestCapacityInput').val(guestCapacity);
                 $('#ratingInput').val(rating);
+                $('#keywordInput').val(keyword);
+                $('#cityInput').val(city);
 
                 $('#amenitiesContainer').empty();
                 selectedAmenities.forEach(a => {
@@ -479,6 +531,8 @@
                 $('#maxPriceInput').val('');
                 $('#guestCapacityInput').val('');
                 $('#ratingInput').val('');
+                $('#keywordInput').val('');
+                $('#cityInput').val('');
                 $('#amenitiesContainer').empty();
                 slider.noUiSlider.set([50, 500]);
                 loadListings('{{ route('accomodations.index') }}');
@@ -504,6 +558,13 @@
                 });
                 $('#boundsInput').val(boundsData);
                 loadListings('{{ route('accomodations.index') }}');
+            });
+
+            // Clear main search bar (keyword and city)
+            $('#clearMainSearch').on('click', function() {
+                $('input[name="keyword"]').val('');
+                $('input[name="city"]').val('');
+                $('#searchForm').submit();
             });
         });
     </script>

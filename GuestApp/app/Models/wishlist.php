@@ -9,10 +9,10 @@ class wishlist extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'wishlistid';  // Set primary key to 'userid'
-    public $incrementing = false;     // UUIDs are not auto-incrementing
+    protected $primaryKey = 'wishlistid';  
+    public $incrementing = false;     
     protected $keyType = 'uuid';
-
+    public $timestamps = false;
     public function user()
     {
         return $this->belongsTo(User::class, 'userid', 'userid');

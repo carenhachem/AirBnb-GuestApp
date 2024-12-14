@@ -21,6 +21,29 @@ class AccomodationController extends Controller
         // Initialize the query for accommodations
         $query = Accomodation::query()->with(['type', 'location', 'amenities']);
 
+        // Keyword search (description, city, type)
+        if ($request->filled('keyword')) {
+            $keyword = $request->input('keyword');
+            $query->where(function($q) use ($keyword) {
+                $q->where('description', 'ILIKE', "%{$keyword}%")
+                  ->orWhereHas('location', function($locQ) use ($keyword) {
+                      $locQ->where('city', 'ILIKE', "%{$keyword}%")
+                           ->orWhere('address', 'ILIKE', "%{$keyword}%");
+                  })
+                  ->orWhereHas('type', function($typeQ) use ($keyword) {
+                      $typeQ->where('accomodationdesc', 'ILIKE', "%{$keyword}%");
+                  });
+            });
+        }
+
+        // Filter by city
+        if ($request->filled('city')) {
+            $city = $request->input('city');
+            $query->whereHas('location', function($q) use ($city) {
+                $q->where('city', 'ILIKE', "%{$city}%");
+            });
+        }
+
         // Filter by price range
         if ($request->filled('min_price') && $request->filled('max_price')) {
             $query->whereBetween('pricepernight', [$request->min_price, $request->max_price]);
@@ -32,6 +55,36 @@ class AccomodationController extends Controller
             $query->whereHas('location', function ($q) use ($bounds) {
                 $q->whereBetween('latitude', [$bounds['south'], $bounds['north']])
                   ->whereBetween('longitude', [$bounds['west'], $bounds['east']]);
+            });
+        }
+
+        // Filter by type of accommodation
+        if ($request->filled('type')) {
+            $query->whereHas('type', function ($q) use ($request) {
+                $type = $request->input('type');
+                $q->where('accomodationdesc', 'ILIKE', "%{$type}%");
+            });
+        }
+
+        // Filter by guest capacity
+        if ($request->filled('guestCapacity')) {
+            $query->where('guestcapacity', '>=', (int)$request->input('guestCapacity'));
+        }
+
+        // Filter by minimum rating
+        if ($request->filled('rating')) {
+            $query->where('rating', '>=', (int)$request->input('rating'));
+        }
+
+        // Filter by amenities
+        if ($request->filled('amenities')) {
+            $amenitiesFilter = $request->input('amenities');
+            if (!is_array($amenitiesFilter)) {
+                $amenitiesFilter = [$amenitiesFilter];
+            }
+
+            $query->whereHas('amenities', function ($q) use ($amenitiesFilter) {
+                $q->whereIn('amenitydesc', $amenitiesFilter);
             });
         }
 
@@ -70,18 +123,16 @@ class AccomodationController extends Controller
         }
 
         // Fetch accommodations with pagination
-        $accomodations = $query->paginate(10); // Adjust per-page count as needed
-
-        // Append all current request parameters to pagination links
+        $accomodations = $query->paginate(10); // Adjust per-page as needed
         $accomodations->appends($request->all());
 
-        // Fetch the wishlist for the logged-in user
-        $wishlistItems = Auth::check() 
-            ? wishlist::where('userid', Auth::id())->pluck('accomodationid')->toArray() 
+        // Fetch wishlist items for logged in user
+        $wishlistItems = Auth::check()
+            ? wishlist::where('userid', Auth::id())->pluck('accomodationid')->toArray()
             : [];
 
         if ($request->ajax()) {
-            // Return only the partial view
+            // Return only the partial view if AJAX
             return view('accomodations.partials._list', compact('accomodations', 'wishlistItems'))->render();
         }
 
@@ -90,7 +141,7 @@ class AccomodationController extends Controller
 
     public function show($id)
     {
-        // Fetch the accommodation with its related data
+        // Fetch the accommodation with related data
         $accomodation = Accomodation::with(['type', 'location', 'amenities'])->findOrFail($id);
 
         // Fetch existing reservations for the accommodation
@@ -112,8 +163,8 @@ class AccomodationController extends Controller
             }
         }
 
-        // Check if the accommodation is in the user's wishlist
-        $isInWishlist = Auth::check() 
+        // Check if in wishlist
+        $isInWishlist = Auth::check()
             ? wishlist::where('userid', Auth::id())
                 ->where('accomodationid', $id)
                 ->exists()
@@ -123,36 +174,37 @@ class AccomodationController extends Controller
     }
 
     public function toggleWishlist(Request $request)
-    {
-        // Must be logged in to toggle wishlist
-        if (!Auth::check()) {
-            return response()->json(['error' => 'Not authenticated'], 401);
-        }
-
-        $request->validate([
-            'accomodationid' => 'required|exists:accomodations,accomodationid',
-        ]);
-
-        $userId = Auth::id();
-        $accomodationId = $request->accomodationid;
-
-        // Check if already in wishlist
-        $existing = wishlist::where('userid', $userId)
-                    ->where('accomodationid', $accomodationId)
-                    ->first();
-
-        if ($existing) {
-            // Remove from wishlist
-            $existing->delete();
-            return response()->json(['message' => 'Removed from wishlist', 'status' => 'removed']);
-        } else {
-            // Add to wishlist
-            $wishlist = new wishlist();
-            $wishlist->wishlistid = (string) \Illuminate\Support\Str::uuid();
-            $wishlist->userid = $userId;
-            $wishlist->accomodationid = $accomodationId;
-            $wishlist->save();
-            return response()->json(['message' => 'Added to wishlist', 'status' => 'added']);
-        }
+{
+    if (!Auth::check()) {
+        return response()->json(['error' => 'Not authenticated'], 401);
     }
+
+    $request->validate([
+        'accomodationid' => 'required|exists:accomodations,accomodationid',
+    ]);
+
+    $userId = Auth::id();
+    $accomodationId = $request->accomodationid;
+
+    $existing = \App\Models\wishlist::where('userid', $userId)
+                 ->where('accomodationid', $accomodationId)
+                 ->first();
+
+    if ($existing) {
+        // Remove from wishlist
+        $existing->delete();
+        return response()->json(['message' => 'Removed from wishlist', 'status' => 'removed']);
+    } else {
+        // Add to wishlist
+        $wishlist = new \App\Models\wishlist();
+        $wishlist->wishlistid = (string) \Illuminate\Support\Str::uuid();
+        $wishlist->userid = $userId;
+        $wishlist->accomodationid = $accomodationId;
+        $wishlist->save();
+
+        return response()->json(['message' => 'Added to wishlist', 'status' => 'added']);
+    }
+}
+
+
 }
