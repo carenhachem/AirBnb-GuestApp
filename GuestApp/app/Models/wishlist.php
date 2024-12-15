@@ -12,7 +12,7 @@ class wishlist extends Model
     protected $primaryKey = 'wishlistid';  
     public $incrementing = false;     
     protected $keyType = 'uuid';
-
+    public $timestamps = false;
     public function user()
     {
         return $this->belongsTo(User::class, 'userid', 'userid');

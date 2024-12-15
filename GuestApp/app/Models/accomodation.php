@@ -78,4 +78,43 @@ public function location()
         return $this->hasMany(review::class, 'accomodationid', 'accomodationid');
     }
 
+
+    public function scopeSearch($query, $keyword)
+{
+    if ($keyword) {
+        $query->where(function($q) use ($keyword) {
+            $q->where('description', 'ILIKE', "%{$keyword}%")
+              ->orWhereHas('location', function ($locQ) use ($keyword) {
+                  $locQ->where('city', 'ILIKE', "%{$keyword}%")
+                       ->orWhere('address', 'ILIKE', "%{$keyword}%");
+              })
+              ->orWhereHas('type', function ($typeQ) use ($keyword) {
+                  $typeQ->where('accomodationdesc', 'ILIKE', "%{$keyword}%");
+              });
+        });
+    }
+    return $query;
+}
+
+public function scopeByCity($query, $city)
+{
+    if ($city) {
+        $query->whereHas('location', function ($q) use ($city) {
+            $q->where('city', 'ILIKE', "%{$city}%");
+        });
+    }
+    return $query;
+}
+
+public function scopeSearchByType($query, $type)
+{
+    if ($type) {
+        $query->whereHas('type', function ($q) use ($type) {
+            $q->where('accomodationdesc', 'ILIKE', "%{$type}%");
+        });
+    }
+    return $query;
+}
+
+
 }

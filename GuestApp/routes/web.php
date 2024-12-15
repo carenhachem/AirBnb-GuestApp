@@ -9,17 +9,13 @@ use App\Http\Controllers\AccomodationTypeController;
 use App\Http\Controllers\PaymentGatewayController;
 use App\Http\Controllers\ReviewController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+//Route::get('/', function () {
+//    return view('welcome');
+//});
 
 // Route::get('/home', function () {
 //     return view('home');
 // })->middleware(['auth'])->name('home');
-
-Route::get('/home', function () {
-    return view('home');
-})->name('home');
 
 // Route::apiResource('user',AuthController::class);
 // Route::get('/signup', [AuthController::class, 'create'])->name('user.create');
@@ -44,12 +40,14 @@ Route::put('/profile/update', [UserController::class, 'updateProfile'])->middlew
 
 Route::get('/reservations', [ReservationController::class, 'index'])->middleware('auth')->name('booking-history');
 Route::get('/wishlist', [ReservationController::class, 'wishlist'])->middleware('auth')->name('wishlist-history');
+Route::post('/wishlist/toggle', [AccomodationController::class, 'toggleWishlist'])->name('wishlist.toggle');
 Route::delete('/wishlist/{id}', [ReservationController::class, 'destroy'])->middleware('auth')->name('wishlist.destroy');
+
 
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 //Accomodations
-Route::get('/accommodations', [AccomodationController::class, 'index'])->name('accomodations.index');
+Route::get('/', [AccomodationController::class, 'index'])->name('accomodations.index');
 Route::get('/accommodations/{id}', [AccomodationController::class, 'show'])->name('accomodations.show');
 Route::post('/accomodations/{id}/reserve', [ReservationController::class, 'store'])->name('reservations.store');
 Route::post('/filter-accommodations', [AccomodationController::class, 'filterByBounds']);
