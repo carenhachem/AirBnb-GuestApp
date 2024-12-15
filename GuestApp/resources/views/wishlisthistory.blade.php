@@ -56,7 +56,7 @@
           <!-- Action -->
           <td class="text-center">
             <!-- Add to Cart button -->
-            <form action="{{ route('payment.show') }}" method="GET" class="form-inline">
+            <form action="{{ route('accomodations.show', ['id' => $booking->accomodationid]) }}" method="GET" class="form-inline">
               @csrf
               <button type="submit" class="action-btn">Book Now</button>
             </form> 

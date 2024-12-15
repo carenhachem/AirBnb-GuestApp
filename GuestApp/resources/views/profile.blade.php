@@ -1,15 +1,3 @@
-{{-- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profile</title>
-  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
-  <link href="{{ asset('css/profile.css') }}" rel="stylesheet">
-</head>
-<body> --}}
-
 @extends('layouts.app')
 
 @push('styles')
@@ -139,19 +127,3 @@
     });
   </script>
 @endpush
-
-{{-- <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> --}}
-{{-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  // Handle Save Changes button click
-  document.getElementById('saveChangesBtn').addEventListener('click', function() {
-    const activeTab = document.querySelector('.tab-pane.active');
-    const form = activeTab.querySelector('form');
-    if (form) form.submit();
-  });
-</script> --}}
-{{-- </body>
-</html> --}}

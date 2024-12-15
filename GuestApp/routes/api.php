@@ -12,16 +12,16 @@ use App\Models\User;
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
-Route::get('/payment', [PaymentGatewayController::class, 'showPaymentPage'])->name('payment.show');
-Route::get('/payment/receipt', [PaymentGatewayController::class, 'previewReceipt'])->name('payment.receipt');
-Route::post('/payment/receipt/confirm',[PaymentGatewayController::class, 'confirm'])->name('payment.receipt.confirm');
-Route::post('/payment/receipt/confirm-download',[PaymentGatewayController::class, 'confirmAndDownload'])->name('payment.receipt.confirm-download');
+// Route::get('/payment', [PaymentGatewayController::class, 'showPaymentPage'])->name('payment.show');
+// Route::get('/payment/receipt', [PaymentGatewayController::class, 'previewReceipt'])->name('payment.receipt');
+// Route::post('/payment/receipt/confirm',[PaymentGatewayController::class, 'confirm'])->name('payment.receipt.confirm');
+// Route::post('/payment/receipt/confirm-download',[PaymentGatewayController::class, 'confirmAndDownload'])->name('payment.receipt.confirm-download');
 
-Route::middleware(['auth:sanctum', 'extractUserId'])->get('/user', function (Request $request) {
-    return response()->json([
-        'userid' => $request->userid,
-    ]);
-});
+// Route::middleware(['auth:sanctum', 'extractUserId'])->get('/user', function (Request $request) {
+//     return response()->json([
+//         'userid' => $request->userid,
+//     ]);
+// });
 
 //Route::apiResource('user',AuthController::class);
 // Route::get('signup', [AuthController::class, 'create'])->name('user.create');

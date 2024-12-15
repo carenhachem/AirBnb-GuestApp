@@ -407,7 +407,7 @@
                                 <h6 class="mt-2">${properties.description}</h6>
                                 <p class="mb-1"><i class="bi bi-geo-alt-fill me-1"></i>${properties.city}</p>
                                 <p class="mb-1"><i class="bi bi-currency-dollar me-1"></i>${properties.price} per night</p>
-                                <a href="/accomodations/${properties.id}" class="btn btn-sm btn-primary mt-2">View Details</a>
+                                <a href="/accommodations/${properties.id}" class="btn btn-sm btn-primary mt-2">View Details</a>
                             </div>
                         `;
 
