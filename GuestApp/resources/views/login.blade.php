@@ -54,12 +54,12 @@
 
       <div class="line"></div>
 
-      <div class="media-options">
+      {{-- <div class="media-options">
         <a href="#" class="field facebook">
           <i class='bx bxl-facebook facebook-icon'></i>
           <span>Login with Facebook</span>
         </a>
-      </div>
+      </div> --}}
 
       <div class="media-options">
         <a href="{{ route('google-auth') }}" class="field google">

@@ -23,6 +23,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" href="{{ route('profile') }}">Profile</a></li>
+                            <li><a class="dropdown-item" href="{{ route('booking-history') }}">Reservations</a></li>
                             <li><a class="dropdown-item" href="{{ route('wishlist-history') }}">Wishlist</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{{ route('logout') }}">Logout</a></li>

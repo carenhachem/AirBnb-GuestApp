@@ -16,9 +16,9 @@
                     <i class="fab fa-google"></i>
                 </a>
                 <!-- Facebook Login Button with Font Awesome Icon -->
-                <a href="{{ url('login/facebook') }}" class="social-button">
+                {{-- <a href="{{ url('login/facebook') }}" class="social-button">
                     <i class="fab fa-facebook-f"></i>
-                </a>
+                </a> --}}
             </div>
             <div class="line"></div>
             {{-- <p class="or-signup">Or sign up with credentials</p> --}}

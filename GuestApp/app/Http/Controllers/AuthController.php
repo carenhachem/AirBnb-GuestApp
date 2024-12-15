@@ -33,43 +33,40 @@ class AuthController extends Controller
  
 
     public function login(Request $request)
-{
-    // Validate input
-    $request->validate([
-        'username_or_email' => 'required',
-        'password' => 'required',
-    ]);
-
-    $credentials = [
-        'password' => $request->password,
-    ];
-
-    // Determine if the input is an email or username
-    if (filter_var($request->username_or_email, FILTER_VALIDATE_EMAIL)) {
-        // It's an email
-        $credentials['email'] = $request->username_or_email;
-    } else {
-        // It's a username
-        $credentials['username'] = $request->username_or_email;
-    }
-
-    // Attempt to log the user in
-    if (Auth::attempt($credentials)) {
-        // Retrieve authenticated user's ID
-        $user = Auth::user();
-
-        Log::info('User successfully logged in', [
-            'userid' => $user->userid,
-            'firstname' => $user->first_name,
-            'email' => $user->email,
+    {
+        $request->validate([
+            'username_or_email' => 'required',
+            'password' => 'required',
         ]);
-        
-        // Redirect to the intended URL or the default profile page
-        return redirect()->intended(route('profile'))->with('success', "Logged in! User ID: {$user->userid}");
-    }
 
-    return back()->withErrors(['error' => 'Wrong credentials.'])->withInput();
-}
+        $credentials = [
+            'password' => $request->password,
+        ];
+
+        // Determine if the input is an email or username
+        if (filter_var($request->username_or_email, FILTER_VALIDATE_EMAIL)) {
+
+            $credentials['email'] = $request->username_or_email;
+        } else {
+
+            $credentials['username'] = $request->username_or_email;
+        }
+
+        if (Auth::attempt($credentials)) {
+            //retrieve authenticated user's id
+            $user = Auth::user();
+
+            Log::info('User successfully logged in', [
+                'userid' => $user->userid,
+                'firstname' => $user->first_name,
+                'email' => $user->email,
+            ]);
+            
+            return redirect()->intended(route('accomodations.index'))->with('success', "Logged in! User ID: {$user->userid}");
+        }
+
+        return back()->withErrors(['error' => 'Wrong credentials.'])->withInput();
+    }
 
 
     /**
@@ -77,7 +74,6 @@ class AuthController extends Controller
      */
     public function store(Request $request)
     {
-        // Validate the incoming request
         $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -86,11 +82,9 @@ class AuthController extends Controller
             'password' => 'required|string|min:4|confirmed'
         ]);
 
-        // Prepare the user data
         $userData = $request->except('password_confirmation');
         $userData['password'] = bcrypt($request->password);
 
-        // Create the user
         $user = User::create([
             'userid' => Str::uuid(),
             'first_name' => $request['first_name'],
@@ -102,7 +96,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->intended(route('profile'))->with('success', "Logged in! User ID: {$user->userid}");
+        return redirect()->intended(route('accomodations.index'))->with('success', "Logged in! User ID: {$user->userid}");
     }
 
     // Redirect to Google
@@ -131,12 +125,12 @@ class AuthController extends Controller
 
                 Auth::login($new_user);
                 $token = $new_user->createToken('API Token')->plainTextToken;
-                return redirect()->intended('home');
+                return redirect()->intended('accomodations.index');
             }
             else{
                 Auth::login($user);
                 $token = $user->createToken('API Token')->plainTextToken;
-                return redirect()->intended('home');
+                return redirect()->intended('accomodations.index');
             }
 
         } catch (\Throwable $th) {

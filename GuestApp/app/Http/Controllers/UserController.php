@@ -38,8 +38,6 @@ class UserController extends Controller
             Log::info('User is not authenticated.');
         }
         
-        Log::info('hi');
-
         $user = Auth::user();
 
         Log::info('Authenticated user accessed the profile page', [
@@ -47,7 +45,7 @@ class UserController extends Controller
             'email' => $user->email,
         ]);
 
-        return view('profile', ['user' => $user]); // Pass user data to the blade view
+        return view('profile', ['user' => $user]); 
     }
 
 
@@ -84,13 +82,13 @@ class UserController extends Controller
     public function updateProfile(Request $request)
     {
         $request->validate([
-            'profilepic' => 'file|image|mimes:jpeg,png,jpg||max:2048',
+            'profilepic' => 'file|image|mimes:jpeg,png,jpg|max:2048',
             'first_name' => 'required|string|max:50',
             'last_name' => 'required|string|max:50',
         ], [
             'profilepic.file' => 'The profile picture must be a valid file.',
             'profilepic.mimes' => 'The profile picture must be a JPG, JPEG, PNG, or GIF.',
-            'profilepic.max' => 'The profile picture size must not exceed 800 KB.',
+            'profilepic.max' => 'The profile picture size must not exceed 2048 KB.',
             'first_name.required' => 'First name is required.',
             'first_name.string' => 'First name must be a valid string.',
             'first_name.max' => 'First name must not exceed 50 characters.',

@@ -1,16 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Wishlist</title>
+@extends('layouts.app')
+
+@push('styles')
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet"> 
   <link rel="stylesheet" href="{{ asset('css/wishlisthistory.css') }}">
-</head>
-<body>
+@endpush
 
+@section('content')
   <div class="container">
     <!-- Wishlist Header -->
     <div class="wishlist-header">
@@ -25,7 +22,7 @@
           <th>Accommodation</th>
           <th class="text-center">Price per night</th>
           <th class="text-center">Location</th>
-          <th class="text-center">Action</th>
+          <th class="text-center"></th>
         </tr>
       </thead>
       <tbody>
@@ -59,28 +56,29 @@
           <!-- Action -->
           <td class="text-center">
             <!-- Add to Cart button -->
-            <form action="#" method="POST" class="form-inline">
+            <form action="{{ route('payment.show') }}" method="GET" class="form-inline">
               @csrf
-              <button type="submit" class="action-btn">Add to Cart</button>
-  
+              <button type="submit" class="action-btn">Book Now</button>
+            </form> 
               <!-- Trash button -->
               <form action="{{ route('wishlist.destroy', ['id' => $booking->wishlistid]) }}" method="POST" style="display:inline;">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn" title="Remove from Wishlist">
-                  <i class="fa fa-trash"></i>
+                  <i class="fa fa-trash fa-lg trash-hover"></i>
                 </button>
-              </form>
-            </form>        
+              </form>       
           </td>
         </tr>
         @endforeach
       </tbody>
     </table>
   </div>  
+@endsection
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-</body>
-</html>
+@push('scripts')
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+@endpush
+
