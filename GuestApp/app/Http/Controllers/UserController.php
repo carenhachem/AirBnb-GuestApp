@@ -13,22 +13,6 @@ use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {   
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
 
     public function showProfile()
     {
@@ -114,21 +98,5 @@ class UserController extends Controller
         DB::table('users')->where('userid', $user->userid)->update($data);
 
         return back()->with('success', 'Profile changed successfully.');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }
