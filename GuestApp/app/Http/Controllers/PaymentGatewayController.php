@@ -40,6 +40,7 @@ class PaymentGatewayController extends Controller
         'cvv' => 'required|string|max:4',
     ]);*/
 
+
         $user = Auth::user();
 
         $locationId = $request->input('accommodation_locationid');
@@ -55,81 +56,11 @@ class PaymentGatewayController extends Controller
         ]);
 
         return view('receiptPreview', ['receiptData' => $receiptData]);
+
     }
 
-    public function confirm(Request $request)
-    {
-       // the request is the receipt data
-        // $request->validate([
-        //     'userid' => 'required|uuid|exists:users,userid',
-        //     'email' => 'required|email',
-        //     'totalPrice' => 'required|numeric|min:0',
-        //     'address' => 'required|string',
-        //     'city' => 'required|string',
-        //     'zipcode' => 'required|string',
-        //     'state' => 'required|string',
-        //     'nameoncard' => 'required|string|max:255',
-        //     'creditcardnumber' => 'required|string|max:255',
-        //     'expyear' => 'required|integer',
-        //     'expmonth' => 'required|integer',
-        //     'cvv' => 'required|string|max:4',
-        // ]);
-
-
-        $cardInfo = Cardinfo::create([
-            'cardinfoid' => (string) \Str::uuid(),
-            'nameoncard' => $request->nameoncard,
-            'creditcardnumber' => bcrypt($request->creditcardnumber),
-            'expyear' => $request->expyear,
-            'expmonth' => $request->expmonth,
-            'cvv' => $request->cvv,
-        ]);
-        
-        $cardInfo->save();
-
-        $transaction = Transaction::create([
-            'transactionid' => (string) \Str::uuid(),
-            'userid' => $request->userid,
-            'address' => $request->address,
-            'city' => $request->city,
-            'state' => $request->state,
-            'zipcode' => $request->zipcode,
-            'infoid' => $cardInfo->cardinfoid,
-            'totalPrice' => $request->totalPrice,
-            'paydate' => now(),
-        ]);
-        $transaction->save();
-
-        try {
-            // Send email with accommodation details
-            Mail::send('receipt', [
-                'transaction' => $transaction,
-                'accommodation_name' => $request->accommodation_name,
-                'accommodation_location' => $request->location
-            ], function ($message) use ($request) {
-                $message->to($request->email)
-                        ->subject('Payment Receipt');
-            });
-    
-            Log::info('Email sent successfully to: ' . $request->email);
-        } catch (\Exception $e) {
-            Log::error('Failed to send email to: ' . $request->email . '. Error: ' . $e->getMessage());
-            return response()->json([
-                'message' => 'Payment confirmed, but failed to send confirmation email.',
-                'transaction' => $transaction,
-            ], 500);
-        }
-
-        return response()->json([
-            'message' => 'Payment confirmed successfully. A confirmation email has been sent.',
-            'transaction' => $transaction,
-        ]);
-    }
-
-    
     public function confirmAndDownload(Request $request)
     {
-
         // $request->validate([
         //     'userid' => 'required|uuid|exists:users,userid',
         //     'email' => 'required|email|exists:users,email',
@@ -145,29 +76,15 @@ class PaymentGatewayController extends Controller
         //     'cvv' => 'required|string|max:4',
         // ]);
 
-        $cardInfo = Cardinfo::create([
-            'cardinfoid' => (string) \Str::uuid(),
-            'nameoncard' => $request->nameoncard,
-            'creditcardnumber' => bcrypt($request->creditcardnumber),
-            'expyear' => $request->expyear,
-            'expmonth' => $request->expmonth,
-            'cvv' => $request->cvv,
-        ]);
-        $cardInfo->save();
-
-        $transaction = Transaction::create([
-            'transactionid' => (string) \Str::uuid(),
+        $transaction = [
             'userid' => $request->userid,
             'address' => $request->address,
             'city' => $request->city,
             'state' => $request->state,
             'zipcode' => $request->zipcode,
-            'infoid' => $cardInfo->cardinfoid,
             'amount' => $request->totalPrice,
             'paydate' => now(),
-        ]);
-        $transaction->save();
-
+        ];
         try {
             // Send email
             Mail::send('receipt', [
@@ -192,6 +109,7 @@ class PaymentGatewayController extends Controller
             'transaction' => $transaction, 
          //   'location' => $request->accommodation_address,
             'accommodation_name' => $request->accomodation_name,
+            'accomodation_name' => $request->accomodation_name,
             'accommodation_location' => $request->accommodation_address,
             'accommodation_id' =>$request->accomodation_id,
             'checkin' =>$request->checkin,
@@ -200,15 +118,16 @@ class PaymentGatewayController extends Controller
             'username' =>$request->username
         ];
 
-    $pdf = PDF::loadView('receiptPdf', ['data' => $data]);
-    $pdfContent = $pdf->output();
-
-    // Stream PDF download
-   return view('receiptPdf')->with([
-    'accommodation_id' => $request->accomodation_id,
-    'data' => $data,
-    // Add other variables if necessary
-]);
-
-}   
+        try {
+            // Save the PDF
+            $pdf = PDF::loadView('receiptPdf', ['data' => $data]);
+            $filePath = (storage_path('app\\public\\receipts\\' . $data['username'] . '_receipt.pdf'));
+            $pdf->save($filePath);
+        
+        } catch (\Exception $e) {
+            Log::error('Failed to generate PDF. Error: ' . $e->getMessage());
+            return response()->json(['message' => 'Failed to generate PDF.', 'transaction' => $transaction], 500);
+        }
+            return $pdf->download('receipt-' . $request->username . '.pdf');
+    }   
 }

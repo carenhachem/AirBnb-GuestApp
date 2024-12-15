@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\reservation;
 use App\Models\Accomodation;
+use App\Models\Cardinfo;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -47,7 +49,7 @@ class ReservationController extends Controller
 
     public function store(Request $request, $id)
 {
-    dd($id);
+    
     /*$request->validate([
         'checkin' => 'required|date|after_or_equal:today',
         'checkout' => 'required|date|after:checkin',
@@ -67,6 +69,30 @@ class ReservationController extends Controller
     if (!$isAvailable) {
         return back()->withErrors(['The selected dates are not available.']);
     }
+
+
+    $cardInfo = Cardinfo::create([
+        'cardinfoid' => (string) \Str::uuid(),
+        'nameoncard' => $request->nameoncard,
+        'creditcardnumber' => bcrypt($request->creditcardnumber),
+        'expyear' => $request->expyear,
+        'expmonth' => $request->expmonth,
+        'cvv' => $request->cvv,
+    ]);
+    $cardInfo->save();
+
+    $transaction = Transaction::create([
+        'transactionid' => (string) \Str::uuid(),
+        'userid' => $request->userid,
+        'address' => $request->address,
+        'city' => $request->city,
+        'state' => $request->state,
+        'zipcode' => $request->zipcode,
+        'infoid' => $cardInfo->cardinfoid,
+        'amount' => $request->totalPrice,
+        'paydate' => now(),
+    ]);
+    $transaction->save();
 
     // Calculate total price
     $accomodation = Accomodation::findOrFail($id);

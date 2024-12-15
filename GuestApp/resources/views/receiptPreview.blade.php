@@ -47,22 +47,22 @@
         </div>
     </div>
 
-    <div class="buttons-container">
-        <form method="post" action="{{ route('payment.receipt.confirm') }}">
-            @csrf
-            @foreach ($receiptData as $key => $value)
-                <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-            @endforeach
-            <button type="submit" name="action" value="confirm">Confirm</button>
-        </form>
-
         <form method="post" action="{{ route('payment.receipt.confirm-download') }}">
             @csrf
             @foreach ($receiptData as $key => $value)
                 <input type="hidden" name="{{ $key }}" value="{{ $value }}">
             @endforeach
-            <button type="submit" name="action" value="confirm-download">Confirm and Download</button>
+            <button type="submit" name="action" value="confirm-download">Download Receipt</button>
         </form>
+
+        <form method="post" action="{{ route('reservation.store', ['id' => $receiptData['accomodation_id']]) }}">
+            @csrf
+            @foreach ($receiptData as $key => $value)
+                <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+            @endforeach
+            <button type="submit" name="action" value="confirm-download">Confirm</button>
+        </form>
+
     </div>
 </div>
 </body>
