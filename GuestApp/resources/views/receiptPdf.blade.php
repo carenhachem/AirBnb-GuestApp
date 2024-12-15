@@ -49,3 +49,26 @@
 </div>
 </body>
 </html>
+
+<script>
+    window.onload = function() {
+        fetch("{{ route('reservation.store', ['id' => $data['accommodation_id']]) }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify({ data: @json($data) })
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log("Reservation stored successfully");
+            } else {
+                console.error("Failed to store reservation");
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    }
+</script>
+
+

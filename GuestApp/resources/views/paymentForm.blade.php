@@ -19,6 +19,15 @@
                 <div class="col">
                     <h3 class="title">Billing Address</h3>
 
+                      <input type="hidden" name="checkin" value="{{ old('checkin', request('checkin')) }}">
+            <input type="hidden" name="checkout" value="{{ old('checkout', request('checkout')) }}">
+            <input type="hidden" name="accomodation_id" value="{{ old('accomodation_id', request('accomodation_id')) }}">
+            <input type="hidden" name="accomodation_name" value="{{ old('accomodation_name', request('accomodation_name')) }}">
+            <input type="hidden" name="pricepernight" value="{{ old('pricepernight', request('pricepernight')) }}">
+            <input type="hidden" name="totalPrice" value="{{ old('totalPrice', request('totalPrice')) }}">
+            <input type="hidden" name="accommodation_locationid" value="{{ old('accommodation_locationid', request('accommodation_locationid')) }}">
+
+
                     <div class="inputBox">
                         <label for="name">Full Name:</label>
                         <input type="text" id="name" placeholder="Enter your full name" required>
@@ -67,10 +76,27 @@
                         <input type="text" id="cardName" name="nameoncard" placeholder="Enter card name" required>
                     </div>
 
+
                     <div class="inputBox">
-                        <label for="cardNum">Credit Card Number:</label>
-                        <input type="text" id="cardNum" name="creditcardnumber" placeholder="1111-2222-3333-4444" maxlength="19" required>
+                    <label for="cardNum">Credit Card Number:</label>
+                    <div style="position: relative;">
+                        <input 
+                            type="password" 
+                            id="cardNum" 
+                            name="creditcardnumber" 
+                            placeholder="1111-2222-3333-4444" 
+                            maxlength="19" 
+                            required
+                            style="padding-right: 40px;"
+                        >
+                        <button 
+                            type="button" 
+                            id="toggleCardNum" 
+                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer;">
+                            👁️
+                        </button>
                     </div>
+                </div>
 
                     <div class="inputBox">
                         <label for="">Exp Month:</label>
@@ -123,3 +149,16 @@
     <script src="{{ asset('../public/js/payment.js') }}"></script>
 </body>
 </html>
+
+<script>
+    document.getElementById('toggleCardNum').addEventListener('click', function () {
+        const cardNumInput = document.getElementById('cardNum');
+        if (cardNumInput.type === 'password') {
+            cardNumInput.type = 'text';
+            this.textContent = '🙈'; // Change to a closed eye icon
+        } else {
+            cardNumInput.type = 'password';
+            this.textContent = '👁️'; // Change back to an open eye icon
+        }
+    });
+</script>

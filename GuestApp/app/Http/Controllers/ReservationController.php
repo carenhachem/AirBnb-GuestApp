@@ -47,10 +47,11 @@ class ReservationController extends Controller
 
     public function store(Request $request, $id)
 {
-    $request->validate([
+    dd($id);
+    /*$request->validate([
         'checkin' => 'required|date|after_or_equal:today',
         'checkout' => 'required|date|after:checkin',
-    ]);
+    ]);*/
 
     // Check if the dates are available
     $isAvailable = Reservation::where('accomodationid', $id)

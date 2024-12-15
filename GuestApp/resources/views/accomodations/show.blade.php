@@ -61,16 +61,21 @@
                             {{ $errors->first() }}
                         </div>
                     @endif
-                    <form id="reservationForm" action="{{ route('reservations.store', $accomodation->accomodationid) }}" method="POST">
+                    <form id="reservationForm" action="{{ route('payment.show') }}" method="GET">
                         @csrf
                         <div class="mb-3">
                             <label for="reservationDates" class="form-label">Select Dates</label>
                             <input type="text" id="reservationDates" class="form-control" placeholder="Check-in - Check-out" readonly required>
                             <input type="hidden" name="checkin" id="checkin">
                             <input type="hidden" name="checkout" id="checkout">
+                            <input type="hidden" name="accomodation_id" id ="accomodation_id" value="{{ $accomodation->accomodationid }}">
+                            <input type="hidden" name="accomodation_name" id="accomodation_name" value="{{ $accomodation->description }}">
+                            <input type="hidden" name="accommodation_locationid" id="accommodation_locationid" value="{{ $accomodation->locationid }}">
+                            <input type="hidden" name="pricepernight" id ="pricepernight" value="{{ $accomodation->pricepernight }}">
+                            <input type="hidden" name="totalPrice" id="totalPrice">
                         </div>
                         <div class="mb-3">
-                            <p><strong>Total Price:</strong> <span id="totalPrice">$0</span></p>
+                            <p><strong>Total Price:</strong> <span id="totalPriceCalculated">$0</span></p>
                         </div>
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary">Book Now</button>
@@ -122,7 +127,11 @@
                             const diffDays = Math.round(Math.abs((date2.dateInstance - date1.dateInstance) / oneDay));
 
                             const totalPrice = diffDays * {{ $accomodation->pricepernight }};
-                            document.getElementById('totalPrice').innerText = '$' + totalPrice;
+                            document.getElementById('totalPriceCalculated').innerText = '$' + totalPrice;
+                            document.getElementById('totalPrice').value = totalPrice;
+                                  
+
+
                         }
                     });
                 }
