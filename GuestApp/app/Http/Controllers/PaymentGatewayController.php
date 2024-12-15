@@ -25,8 +25,7 @@ class PaymentGatewayController extends Controller
 
     public function previewReceipt(Request $request)
     {
-          /*$request->validate([
-        'userid' => 'required|uuid|exists:users,userid',
+        $request->validate([
         'email' => 'required|email',
         'totalPrice' => 'required|numeric|min:0',
         'address' => 'required',
@@ -38,7 +37,7 @@ class PaymentGatewayController extends Controller
         'expyear' => 'required|int',
         'expmonth' => 'required|string',
         'cvv' => 'required|string|max:4',
-    ]);*/
+    ]);
 
 
         $user = Auth::user();
@@ -61,20 +60,19 @@ class PaymentGatewayController extends Controller
 
     public function confirmAndDownload(Request $request)
     {
-        // $request->validate([
-        //     'userid' => 'required|uuid|exists:users,userid',
-        //     'email' => 'required|email|exists:users,email',
-        //     'totalPrice' => 'required|numeric|min:0',
-        //     'address' => 'required|string',
-        //     'city' => 'required|string',
-        //     'zipcode' => 'required|string',
-        //     'state' => 'required|string',
-        //     'nameoncard' => 'required|string|max:255',
-        //     'creditcardnumber' => 'required|string|max:255',
-        //     'expyear' => 'required|integer',
-        //     'expmonth' => 'required|integer',
-        //     'cvv' => 'required|string|max:4',
-        // ]);
+         $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'totalPrice' => 'required|numeric|min:0',
+            'address' => 'required|string',
+            'city' => 'required|string',
+            'zipcode' => 'required|string',
+            'state' => 'required|string',
+            'nameoncard' => 'required|string|max:255',
+            'creditcardnumber' => 'required|string|max:255',
+            'expyear' => 'required|integer',
+           'expmonth' => 'required|string',
+            'cvv' => 'required|string|max:4',
+        ]);
 
         $transaction = [
             'userid' => $request->userid,
@@ -107,7 +105,6 @@ class PaymentGatewayController extends Controller
 
         $data = [
             'transaction' => $transaction, 
-         //   'location' => $request->accommodation_address,
             'accommodation_name' => $request->accomodation_name,
             'accomodation_name' => $request->accomodation_name,
             'accommodation_location' => $request->accommodation_address,
