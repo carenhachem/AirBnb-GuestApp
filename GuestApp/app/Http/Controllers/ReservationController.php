@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\reservation;
 use App\Models\Accomodation;
-use App\Models\wishlist;
-use Carbon\Carbon;
+use App\Models\Cardinfo;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\wishlist;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class ReservationController extends Controller
 {
@@ -88,11 +91,12 @@ class ReservationController extends Controller
 
     public function store(Request $request, $id)
     {
-        $request->validate([
+        
+        /*$request->validate([
             'checkin' => 'required|date|after_or_equal:today',
             'checkout' => 'required|date|after:checkin',
-        ]);
-
+        ]);*/
+    
         // Check if the dates are available
         $isAvailable = Reservation::where('accomodationid', $id)
             ->where('isreserved', true)
@@ -103,11 +107,35 @@ class ReservationController extends Controller
                     ->orWhereRaw('? BETWEEN checkin AND checkout', [$request->checkout]);
             })
             ->doesntExist();
-
+    
         if (!$isAvailable) {
             return back()->withErrors(['The selected dates are not available.']);
         }
-
+    
+    
+        $cardInfo = Cardinfo::create([
+            'cardinfoid' => (string) Str::uuid(),
+            'nameoncard' => $request->nameoncard,
+            'creditcardnumber' => bcrypt($request->creditcardnumber),
+            'expyear' => $request->expyear,
+            'expmonth' => $request->expmonth,
+            'cvv' => $request->cvv,
+        ]);
+        $cardInfo->save();
+    
+        $transaction = Transaction::create([
+            'transactionid' => (string) Str::uuid(),
+            'userid' => $request->userid,
+            'address' => $request->address,
+            'city' => $request->city,
+            'state' => $request->state,
+            'zipcode' => $request->zipcode,
+            'infoid' => $cardInfo->cardinfoid,
+            'amount' => $request->totalPrice,
+            'paydate' => now(),
+        ]);
+        $transaction->save();
+    
         // Calculate total price
         $accomodation = Accomodation::findOrFail($id);
         $checkin = new \DateTime($request->checkin);
@@ -115,7 +143,7 @@ class ReservationController extends Controller
         $interval = $checkin->diff($checkout);
         $nights = $interval->days;
         $totalPrice = $nights * $accomodation->pricepernight;
-
+    
         // Create reservation
         Reservation::create([
             'reservationid' => \Illuminate\Support\Str::uuid(),
@@ -126,7 +154,8 @@ class ReservationController extends Controller
             'totalprice' => $totalPrice,
             'isreserved' => true,
         ]);
-
+    
         return redirect()->route('booking-history')->with('success', 'Reservation created successfully.');
     }
+
 }

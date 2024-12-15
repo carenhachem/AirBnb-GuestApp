@@ -37,7 +37,7 @@ Route::get('/profile', [UserController::class, 'showProfile'])->middleware('auth
 Route::put('/profile/change-password', [UserController::class, 'changePassword'])->middleware('auth')->name('profile.change-password');
 Route::put('/profile/update', [UserController::class, 'updateProfile'])->middleware('auth')->name('profile.update');
 
-
+Route::post('/reservation/store/{id}', [ReservationController::class, 'store'])->name('reservation.store');
 Route::get('/reservations', [ReservationController::class, 'index'])->middleware('auth')->name('booking-history');
 Route::get('/wishlist', [ReservationController::class, 'wishlist'])->middleware('auth')->name('wishlist-history');
 Route::post('/wishlist/toggle', [AccomodationController::class, 'toggleWishlist'])->name('wishlist.toggle');
@@ -58,10 +58,6 @@ Route::get('/types', [AccomodationTypeController::class, 'index'])->name('types.
 Route::get('/types/{id}', [AccomodationTypeController::class, 'show'])->name('types.show');
 
 Route::get('/payment', [PaymentGatewayController::class, 'showPaymentPage'])->middleware('auth')->name('payment.show');
-Route::get('/payment/receipt', [PaymentGatewayController::class, 'previewReceipt'])->name('payment.receipt');
-Route::post('/payment/receipt/confirm',[PaymentGatewayController::class, 'confirm'])->name('payment.receipt.confirm');
-Route::post('/payment/receipt/confirm-download',[PaymentGatewayController::class, 'confirmAndDownload'])->name('payment.receipt.confirm-download');
-
-//Reviews
-Route::get('/accommodations/{id}/reviews', [ReviewController::class, 'index'])->name('review.index');
-Route::post('/accommodations/{id}/add-review',[ReviewController::class, 'store'])->name('reviews.store')->middleware('auth');
+Route::get('/payment/receipt', [PaymentGatewayController::class, 'previewReceipt'])->middleware('auth')->name('payment.receipt');
+Route::post('/payment/receipt/confirm',[PaymentGatewayController::class, 'confirm'])->middleware('auth')->name('payment.receipt.confirm');
+Route::post('/payment/receipt/confirm-download',[PaymentGatewayController::class, 'confirmAndDownload'])->middleware('auth')->name('payment.receipt.confirm-download');

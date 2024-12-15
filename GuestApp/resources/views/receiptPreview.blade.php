@@ -24,8 +24,8 @@
     <div class="section">
         <div class="section-title">Accommodation Information</div>
         <div class="section-content">
-            <p><strong>Accommodation:</strong> {{ $receiptData['accommodation_name'] }}</p>
-            <p><strong>Address:</strong> {{ $receiptData['location'] }}</p>
+            <p><strong>Accommodation:</strong> {{ $receiptData['accomodation_name'] }}</p>
+            <p><strong>Address:</strong> {{ $receiptData['accommodation_address'] }}</p>
             <p><strong>Price per Night:</strong> ${{ number_format($receiptData['pricepernight'], 2) }}</p>
         </div>
     </div>
@@ -43,30 +43,26 @@
     <div class="section">
         <div class="section-title">Payment Information</div>
         <div class="section-content">
-            <p><strong>Amount:</strong> ${{ number_format($receiptData['amount'], 2) }}</p>
+            <p><strong>Amount:</strong> ${{ number_format($receiptData['totalPrice'], 2) }}</p>
         </div>
     </div>
-
-    <div class="buttons-container">
-        <form method="post" action="{{ route('payment.receipt.confirm') }}">
-            @csrf
-            @foreach ($receiptData as $key => $value)
-                <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-            @endforeach
-            <button type="submit" name="action" value="confirm">Confirm</button>
-        </form>
 
         <form method="post" action="{{ route('payment.receipt.confirm-download') }}">
             @csrf
             @foreach ($receiptData as $key => $value)
                 <input type="hidden" name="{{ $key }}" value="{{ $value }}">
             @endforeach
-            <button type="submit" name="action" value="confirm-download">Confirm and Download</button>
+            <button type="submit" name="action" value="confirm-download">Download Receipt</button>
         </form>
-    </div>
 
-    <div class="mt-4">
-        <button onclick="window.history.back();">Edit Details</button>
+        <form method="post" action="{{ route('reservation.store', ['id' => $receiptData['accomodation_id']]) }}">
+            @csrf
+            @foreach ($receiptData as $key => $value)
+                <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+            @endforeach
+            <button type="submit" name="action" value="confirm-download">Confirm</button>
+        </form>
+
     </div>
 </div>
 </body>
